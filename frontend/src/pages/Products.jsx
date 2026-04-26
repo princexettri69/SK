@@ -251,38 +251,52 @@ const Products = () => {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-4" style={{ gap: '1.5rem' }}>
+        <div className="grid grid-4" style={{ gap: '1.25rem' }}>
           {filteredProducts.map((product) => (
             <motion.div 
               key={product._id || product.id} 
-              whileHover={{ y: -10 }}
+              whileHover={{ y: -8 }}
               className="card glass card-hover flex flex-col" 
-              style={{ height: '100%', overflow: 'hidden', borderRadius: '1rem' }}
+              style={{ 
+                height: '100%', 
+                overflow: 'hidden', 
+                borderRadius: '1rem',
+                border: '1px solid var(--glass-border)',
+                background: 'rgba(30, 41, 59, 0.4)'
+              }}
             >
               <Link to={`/products/${product._id || product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <div className="image-zoom" style={{ height: '180px', backgroundColor: 'rgba(0,0,0,0.2)' }}>
+                <div className="image-zoom" style={{ height: '160px', backgroundColor: 'white', position: 'relative' }}>
                   <img 
                     src={product.imageUrl} 
                     alt={product.name} 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '0.5rem' }}
                     onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; }}
                   />
                 </div>
                 
-                <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ marginBottom: '0.75rem' }}>
-                    <span style={{ color: 'var(--primary-accent)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ marginBottom: '0.5rem' }}>
+                    <span style={{ 
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)', 
+                        color: 'var(--primary-accent)', 
+                        padding: '0.2rem 0.5rem', 
+                        borderRadius: '4px', 
+                        fontSize: '0.65rem', 
+                        fontWeight: 700, 
+                        textTransform: 'uppercase' 
+                    }}>
                       {product.category}
                     </span>
-                    <h3 style={{ fontSize: '1.1rem', color: 'white', margin: '0.25rem 0 0 0', lineHeight: '1.3' }}>{product.name}</h3>
+                    <h3 style={{ fontSize: '1rem', color: 'white', margin: '0.5rem 0 0 0', lineHeight: '1.3', fontWeight: 600 }}>{product.name}</h3>
                   </div>
                   
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.25rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: '1.5' }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '1.25rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: '1.5' }}>
                     {product.description}
                   </p>
 
                   <div style={{ marginTop: 'auto' }}>
-                    <span className="btn btn-primary" style={{ width: '100%', padding: '0.5rem', fontSize: '0.85rem', justifyContent: 'center', borderRadius: '0.5rem' }}>
+                    <span className="btn btn-primary" style={{ width: '100%', padding: '0.6rem', fontSize: '0.8rem', justifyContent: 'center', borderRadius: '0.5rem', fontWeight: 600 }}>
                       View Details
                     </span>
                   </div>
