@@ -91,60 +91,100 @@ const Navbar = () => {
         {isOpen ? <X size={28} /> : <Menu size={28} />}
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Popup Modal */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            style={{
-              position: 'fixed',
-              top: 0, left: 0, right: 0, bottom: 0,
-              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98))',
-              backdropFilter: 'blur(15px)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '2.5rem',
-              zIndex: 1000,
-              fontSize: '1.5rem',
-              fontWeight: 600,
-              fontFamily: 'Outfit'
-            }}
-          >
-            <div style={{ position: 'absolute', top: '2rem', right: '2rem' }} onClick={closeMenu}>
-              <X size={32} color="white" />
-            </div>
-
-            <Link to="/" style={linkStyle(location.pathname === '/')} onClick={closeMenu}>Home</Link>
-            <Link to="/about" style={linkStyle(location.pathname === '/about')} onClick={closeMenu}>About Us</Link>
-            <Link to="/products" style={linkStyle(location.pathname === '/products')} onClick={closeMenu}>Products</Link>
+          <>
+            {/* Backdrop */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeMenu}
+              style={{
+                position: 'fixed',
+                top: 0, left: 0, right: 0, bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                backdropFilter: 'blur(8px)',
+                zIndex: 1000
+              }}
+            />
             
-            <div style={{ width: '60px', height: '2px', background: 'rgba(255,255,255,0.1)', margin: '0.5rem 0' }}></div>
+            {/* Popup Content */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+              style={{
+                position: 'fixed',
+                top: '15%',
+                left: '5%',
+                right: '5%',
+                background: 'rgba(30, 41, 59, 0.95)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: '2rem',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                padding: '3rem 2rem',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '2rem',
+                zIndex: 1001,
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+              }}
+            >
+              <button 
+                onClick={closeMenu}
+                style={{ 
+                  position: 'absolute', 
+                  top: '1.5rem', 
+                  right: '1.5rem',
+                  background: 'rgba(255,255,255,0.1)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  padding: '0.5rem',
+                  cursor: 'pointer',
+                  color: 'white'
+                }}
+              >
+                <X size={24} />
+              </button>
 
-            {user ? (
-              <>
-                <div style={{ color: 'var(--text-main)', fontSize: '1.1rem' }}>Hello, {user.name.split(' ')[0]}</div>
-                <button 
-                  onClick={handleLogout}
-                  className="btn btn-primary"
-                  style={{ width: '220px', justifyContent: 'center' }}
-                >
-                  <LogOut size={18} /> Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" style={linkStyle(location.pathname === '/login')} onClick={closeMenu}>Login</Link>
-                <Link to="/signup" className="btn btn-primary" style={{ width: '220px', justifyContent: 'center' }} onClick={closeMenu}>
-                  <LogIn size={18} /> Sign Up
-                </Link>
-              </>
-            )}
-          </motion.div>
+              <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                <img src="/sk-logo.png" alt="S.K Trade" style={{ height: '50px', marginBottom: '1rem' }} />
+                <div style={{ height: '2px', width: '40px', background: 'var(--primary-accent)', margin: '0 auto' }}></div>
+              </div>
+
+              <Link to="/" style={linkStyle(location.pathname === '/')} onClick={closeMenu}>Home</Link>
+              <Link to="/about" style={linkStyle(location.pathname === '/about')} onClick={closeMenu}>About Us</Link>
+              <Link to="/products" style={linkStyle(location.pathname === '/products')} onClick={closeMenu}>Products Catalog</Link>
+              
+              <div style={{ width: '100%', height: '1px', background: 'rgba(255,255,255,0.1)', margin: '1rem 0' }}></div>
+
+              {user ? (
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Logged in as <span style={{ color: 'white', fontWeight: 600 }}>{user.name}</span></div>
+                  <button 
+                    onClick={handleLogout}
+                    className="btn btn-primary"
+                    style={{ width: '100%', justifyContent: 'center', borderRadius: '1rem' }}
+                  >
+                    <LogOut size={18} /> Logout
+                  </button>
+                </div>
+              ) : (
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <Link to="/login" className="btn btn-outline" style={{ width: '100%', justifyContent: 'center', borderRadius: '1rem' }} onClick={closeMenu}>
+                    Login
+                  </Link>
+                  <Link to="/signup" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', borderRadius: '1rem' }} onClick={closeMenu}>
+                    <LogIn size={18} /> Sign Up
+                  </Link>
+                </div>
+              )}
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </nav>
