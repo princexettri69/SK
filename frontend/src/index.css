@@ -141,6 +141,23 @@ nav {
   transition: var(--transition);
 }
 
+.desktop-only {
+  display: flex;
+}
+
+.mobile-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-toggle {
+    display: flex !important;
+  }
+}
+
 nav.scrolled {
   background: var(--glass);
   backdrop-filter: blur(10px);
@@ -204,6 +221,14 @@ nav.scrolled {
 
   .sticky-desktop {
     position: static !important;
+  }
+
+  .brand-text {
+    font-size: 1.2rem !important;
+  }
+
+  .brand-logo {
+    height: 45px !important;
   }
 }
 

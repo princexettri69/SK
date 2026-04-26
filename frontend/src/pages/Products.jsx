@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, Filter, AlertCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -250,11 +251,16 @@ const Products = () => {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-3" style={{ gap: '2rem' }}>
+        <div className="grid grid-4" style={{ gap: '1.5rem' }}>
           {filteredProducts.map((product) => (
-            <div key={product._id || product.id} className="card glass card-hover flex flex-col" style={{ height: '100%', overflow: 'hidden', borderRadius: '1.25rem' }}>
+            <motion.div 
+              key={product._id || product.id} 
+              whileHover={{ y: -10 }}
+              className="card glass card-hover flex flex-col" 
+              style={{ height: '100%', overflow: 'hidden', borderRadius: '1rem' }}
+            >
               <Link to={`/products/${product._id || product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <div className="image-zoom" style={{ height: '220px', backgroundColor: 'rgba(0,0,0,0.2)' }}>
+                <div className="image-zoom" style={{ height: '180px', backgroundColor: 'rgba(0,0,0,0.2)' }}>
                   <img 
                     src={product.imageUrl} 
                     alt={product.name} 
@@ -263,24 +269,26 @@ const Products = () => {
                   />
                 </div>
                 
-                <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', color: 'white', margin: 0 }}>{product.name}</h3>
-                    <span style={{ backgroundColor: 'rgba(96, 165, 250, 0.1)', color: 'var(--primary-accent)', padding: '0.25rem 0.75rem', borderRadius: '2rem', fontSize: '0.85rem', fontWeight: 600 }}>
+                <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <span style={{ color: 'var(--primary-accent)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
                       {product.category}
                     </span>
+                    <h3 style={{ fontSize: '1.1rem', color: 'white', margin: '0.25rem 0 0 0', lineHeight: '1.3' }}>{product.name}</h3>
                   </div>
                   
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.25rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.25rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: '1.5' }}>
                     {product.description}
                   </p>
 
-                  <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem' }}>
-                    <span className="btn btn-primary" style={{ flex: 1, padding: '0.6rem', fontSize: '0.9rem', justifyContent: 'center' }}>View Details</span>
+                  <div style={{ marginTop: 'auto' }}>
+                    <span className="btn btn-primary" style={{ width: '100%', padding: '0.5rem', fontSize: '0.85rem', justifyContent: 'center', borderRadius: '0.5rem' }}>
+                      View Details
+                    </span>
                   </div>
                 </div>
               </Link>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
