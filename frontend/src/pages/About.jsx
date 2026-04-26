@@ -3,12 +3,6 @@ import { motion } from 'framer-motion';
 import { Award, CheckCircle, Users, Box } from 'lucide-react';
 
 // Brand Logos
-import kentLogo from '../assets/brand-kent.png';
-import elicaLogo from '../assets/brand-elica.png';
-import shikharLogo from '../assets/brand-shikhar.jpg';
-import glenLogo from '../assets/brand-glen.jpg';
-import cgLogo from '../assets/brand-cg.png';
-
 // Album Images (Sitework)
 import work1 from '../assets/home-hero.jpg';
 import work2 from '../assets/home-gallery-1.jpg';
@@ -21,11 +15,11 @@ const About = () => {
     }, []);
 
     const brands = [
-        { name: 'KENT RO', logo: kentLogo },
-        { name: 'ELICA', logo: elicaLogo },
-        { name: 'Shikhar Ply', logo: shikharLogo },
-        { name: 'GLEN India', logo: glenLogo },
-        { name: 'CG Group', logo: cgLogo },
+        { name: 'KENT RO', logo: '/images/brands/brand-kent.png' },
+        { name: 'ELICA', logo: '/images/brands/brand-elica.png' },
+        { name: 'Shikhar Ply', logo: '/images/brands/brand-shikhar.jpg' },
+        { name: 'GLEN India', logo: '/images/brands/brand-glen.jpg' },
+        { name: 'CG Group', logo: '/images/brands/brand-cg.png' },
     ];
 
     const album = [work1, work2, work3, work4];

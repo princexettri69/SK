@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut, LogIn } from 'lucide-react';
 import { useAuth } from './AuthContext';
-import skLogo from '../assets/sk-logo.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +41,7 @@ const Navbar = () => {
       boxSizing: 'border-box'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', zIndex: 1001 }}>
-        <img src={skLogo} alt="S.K Trade Logo" style={{ height: '60px', width: 'auto' }} />
+        <img src="/sk-logo.png" alt="S.K Trade Logo" style={{ height: '60px', width: 'auto' }} />
         <Link to="/" style={{ 
           textDecoration: 'none', 
           color: 'var(--text-main)', 
