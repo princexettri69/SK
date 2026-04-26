@@ -250,83 +250,40 @@ const Products = () => {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-3">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map(product => (
-              <ProductCard key={product._id} product={product} />
-            ))
-          ) : (
-            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-              <h3>No products found matching your search criteria.</h3>
+        <div className="grid grid-cols-3" style={{ gap: '2rem' }}>
+          {filteredProducts.map((product) => (
+            <div key={product._id || product.id} className="card glass card-hover flex flex-col" style={{ height: '100%', overflow: 'hidden', borderRadius: '1.25rem' }}>
+              <Link to={`/products/${product._id || product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <div className="image-zoom" style={{ height: '220px', backgroundColor: 'rgba(0,0,0,0.2)' }}>
+                  <img 
+                    src={product.imageUrl} 
+                    alt={product.name} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; }}
+                  />
+                </div>
+                
+                <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', color: 'white', margin: 0 }}>{product.name}</h3>
+                    <span style={{ backgroundColor: 'rgba(96, 165, 250, 0.1)', color: 'var(--primary-accent)', padding: '0.25rem 0.75rem', borderRadius: '2rem', fontSize: '0.85rem', fontWeight: 600 }}>
+                      {product.category}
+                    </span>
+                  </div>
+                  
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.25rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    {product.description}
+                  </p>
+
+                  <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem' }}>
+                    <span className="btn btn-primary" style={{ flex: 1, padding: '0.6rem', fontSize: '0.9rem', justifyContent: 'center' }}>View Details</span>
+                  </div>
+                </div>
+              </Link>
             </div>
-          )}
+          ))}
         </div>
       </div>
-    </div>
-  );
-};
-
-const ProductCard = ({ product }) => {
-  return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', transition: 'all 0.3s ease' }}>
-      <Link to={`/products/${product._id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <div style={{ 
-          height: '250px', 
-          overflow: 'hidden', 
-          borderBottom: '1px solid var(--glass-border)',
-          position: 'relative'
-        }}>
-          <img 
-            src={product.imageUrl} 
-            alt={product.name} 
-            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-            onError={(e) => {
-               e.target.onerror = null; 
-               e.target.style.display = 'none';
-               if(e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
-            }}
-          />
-          <div className="img-placeholder" style={{ display: 'none', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>No Image Available</div>
-        </div>
-        
-        <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-          <span style={{ 
-            fontSize: '0.8rem', 
-            textTransform: 'uppercase', 
-            fontWeight: 600, 
-            color: 'var(--primary-accent)',
-            letterSpacing: '1px',
-            marginBottom: '0.5rem'
-          }}>
-            {product.category}
-          </span>
-          <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: 'var(--primary)' }}>{product.name}</h3>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', flex: 1, fontSize: '0.95rem' }}>
-            {product.description}
-          </p>
-
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-            {product.features && product.features.slice(0, 3).map((feature, idx) => (
-              <span key={idx} style={{ 
-                backgroundColor: 'rgba(59, 130, 246, 0.1)', 
-                color: 'var(--primary-accent)', 
-                padding: '0.25rem 0.5rem', 
-                borderRadius: '4px', 
-                fontSize: '0.75rem',
-                fontWeight: 500
-              }}>
-                {feature}
-              </span>
-            ))}
-          </div>
-          
-          <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem' }}>
-             <span className="btn btn-outline" style={{ flex: 1, padding: '0.5rem', fontSize: '0.9rem', justifyContent: 'center' }}>View Details</span>
-          </div>
-        </div>
-      </Link>
     </div>
   );
 };
