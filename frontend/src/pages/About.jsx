@@ -44,13 +44,13 @@ const About = () => {
 
             {/* Content Section */}
             <section className="section">
-                <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+                <div className="container grid grid-2" style={{ alignItems: 'center' }}>
                     <div>
                         <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>Decades of Excellence in Quality & Trust</h2>
                         <p style={{ marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
                             S.K Trade & Suppliers has been the cornerstone of hardware and interior solutions for years. We pride ourselves on representing the world's most trusted brands, ensuring that every home in our region has access to durable, high-tech, and aesthetic solutions.
                         </p>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                        <div className="grid grid-2" style={{ gap: '1.5rem', marginBottom: '2rem' }}>
                             <div style={statStyle}>
                                 <Award size={24} color="var(--primary-accent)" />
                                 <div>
@@ -112,7 +112,7 @@ const About = () => {
                         <p style={{ color: 'var(--text-muted)' }}>A glimpse into the premium projects and interiors we've supplied and consulted.</p>
                     </div>
                     
-                    <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                    <div className="grid grid-4" style={{ gap: '1.5rem' }}>
                         {album.map((img, i) => (
                             <motion.div 
                                 key={i}

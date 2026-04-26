@@ -228,7 +228,7 @@ const Products = () => {
           </div>
 
           {/* Search */}
-          <div style={{ position: 'relative', width: '300px' }}>
+          <div className="mobile-full" style={{ position: 'relative', width: '300px' }}>
             <Search size={18} color="var(--text-muted)" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} />
             <input
               type="text"

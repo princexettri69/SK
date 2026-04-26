@@ -185,9 +185,9 @@ const ProductDetails = () => {
                     <ArrowLeft size={18} /> Back to Products
                 </Link>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }} className="mobile-stack">
+                <div className="grid grid-2" style={{ alignItems: 'start' }}>
                     {/* Image Column */}
-                    <div style={{ position: 'sticky', top: '100px' }}>
+                    <div className="sticky-desktop">
                         <div className="card" style={{ padding: '1rem', overflow: 'hidden', backgroundColor: 'white' }}>
                             <img 
                                 src={product.imageUrl} 
@@ -227,7 +227,7 @@ const ProductDetails = () => {
                             <h3 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <Info size={20} color="var(--primary-accent)" /> Key Features
                             </h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <div className="grid grid-2" style={{ gap: '1rem' }}>
                                 {product.features?.map((feature, idx) => (
                                     <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem', color: 'var(--text-main)' }}>
                                         <CheckCircle size={18} color="var(--primary-accent)" /> {feature}
