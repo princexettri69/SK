@@ -206,7 +206,7 @@ nav.scrolled {
     gap: 1.25rem;
   }
 }
-  
+@media (max-width: 991px) {
   .hero-text {
     font-size: 2.5rem !important;
     text-align: center;
