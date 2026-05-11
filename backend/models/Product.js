@@ -3,31 +3,35 @@ const mongoose = require('mongoose');
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
-        trim: true
+        required: [true, 'A product must have a name'],
+        trim: true,
+        unique: true
     },
     category: {
         type: String,
-        required: true
+        required: [true, 'A product must belong to a category'],
+        enum: ['Water Purifiers', 'Vacuum Cleaners', 'Air Coolers', 'Kitchen Appliances', 'Hardware', 'Interior Decor']
     },
     description: {
         type: String,
-        required: true
+        required: [true, 'A product must have a description']
     },
-    features: [{
-        type: String
-    }],
+    price: {
+        type: Number,
+        required: [true, 'A product must have a price']
+    },
     imageUrl: {
         type: String,
-        default: 'https://via.placeholder.com/400'
+        default: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
     },
+    features: [String],
     specifications: {
         type: Map,
         of: String
     },
-    inStock: {
+    isFeatured: {
         type: Boolean,
-        default: true
+        default: false
     },
     createdAt: {
         type: Date,
@@ -35,4 +39,6 @@ const productSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema);
+
+module.exports = Product;

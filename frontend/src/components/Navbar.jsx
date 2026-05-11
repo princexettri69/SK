@@ -59,6 +59,7 @@ const Navbar = () => {
         <NavLink to="/" current={location.pathname === '/'}>Home</NavLink>
         <NavLink to="/about" current={location.pathname === '/about'}>About Us</NavLink>
         <NavLink to="/products" current={location.pathname === '/products'}>Our Products</NavLink>
+        {user?.role === 'admin' && <NavLink to="/admin" current={location.pathname === '/admin'}>Admin</NavLink>}
         
         {user ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginLeft: '1rem' }}>
@@ -159,6 +160,7 @@ const Navbar = () => {
               <Link to="/" style={linkStyle(location.pathname === '/')} onClick={closeMenu}>Home</Link>
               <Link to="/about" style={linkStyle(location.pathname === '/about')} onClick={closeMenu}>About Us</Link>
               <Link to="/products" style={linkStyle(location.pathname === '/products')} onClick={closeMenu}>Products Catalog</Link>
+              {user?.role === 'admin' && <Link to="/admin" style={linkStyle(location.pathname === '/admin')} onClick={closeMenu}>Admin Dashboard</Link>}
               
               <div style={{ width: '100%', height: '1px', background: 'rgba(255,255,255,0.1)', margin: '1rem 0' }}></div>
 

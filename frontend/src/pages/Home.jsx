@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Wrench, PaintBucket, Home as HomeIcon, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Wrench, PaintBucket, Home as HomeIcon, ShieldCheck, Star, Award, Zap, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import heroImage1 from '../assets/home-hero.jpg';
@@ -12,10 +12,28 @@ const images = [heroImage1, heroImage2, heroImage3, heroImage4];
 const Home = () => {
   const [index, setIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [loadingFeatured, setLoadingFeatured] = useState(true);
 
   useEffect(() => {
     document.title = "S.K Trade & Suppliers | Premium Hardware & Interior";
+    fetchFeatured();
   }, []);
+
+  const fetchFeatured = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
+        if (!response.ok) throw new Error('Failed to fetch');
+        const data = await response.json();
+        // Just take the first 3 as featured for demo purposes
+        setFeaturedProducts(data.slice(0, 3));
+    } catch (err) {
+        console.error(err);
+        setFeaturedProducts([]);
+    } finally {
+        setLoadingFeatured(false);
+    }
+  };
 
   useEffect(() => {
     let timer;
@@ -27,16 +45,8 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [isHovered]);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
   const handleContactSubmit = (e) => {
     e.preventDefault();
-    // Simulate API call
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
-    console.log("Contact form submitted:", data);
     import('react-hot-toast').then(({ toast }) => {
         toast.success("Message sent successfully! We'll get back to you soon.");
     });
@@ -52,6 +62,19 @@ const Home = () => {
         
         <div className="container grid grid-2" style={{ alignItems: 'center', minHeight: '80vh' }}>
           <div style={{ zIndex: 10 }}>
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+                <span style={{ 
+                    color: 'var(--primary-accent)', 
+                    fontWeight: 700, 
+                    fontSize: '0.9rem', 
+                    letterSpacing: '3px', 
+                    textTransform: 'uppercase',
+                    marginBottom: '1rem',
+                    display: 'block'
+                }}>
+                    ESTABLISHED 2026
+                </span>
+            </motion.div>
             <motion.h1 
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -76,291 +99,144 @@ const Home = () => {
               className="hero-buttons" 
               style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}
             >
-              <Link to="/products" className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>
-                Explore Products <ArrowRight size={20} />
+              <Link to="/products" className="btn btn-primary" style={{ padding: '1.25rem 2.5rem', fontSize: '1.1rem', borderRadius: '50px' }}>
+                Explore Catalog <ArrowRight size={20} />
               </Link>
-              <Link to="/about" className="btn btn-outline" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>
-                About Us
+              <Link to="/about" className="btn btn-outline" style={{ padding: '1.25rem 2.5rem', fontSize: '1.1rem', borderRadius: '50px' }}>
+                Learn More
               </Link>
             </motion.div>
           </div>
 
           <div 
             style={{ perspective: '1500px', zIndex: 10, position: 'relative', height: '450px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-            onMouseEnter={handleMouseEnter}
+            onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
             <AnimatePresence mode="wait">
               <motion.div 
                 key={index}
                 initial={{ rotateY: 90, opacity: 0, scale: 0.9 }}
-                animate={{ 
-                    rotateY: 0,
-                    opacity: 1,
-                    scale: 1
-                }}
+                animate={{ rotateY: 0, opacity: 1, scale: 1 }}
                 exit={{ rotateY: -90, opacity: 0, scale: 0.9 }}
-                transition={{ 
-                    duration: 0.8,
-                    ease: "easeInOut"
-                }}
-                style={{ 
-                  transformStyle: 'preserve-3d', 
-                  width: '100%', 
-                  position: 'absolute',
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+                style={{ transformStyle: 'preserve-3d', width: '100%', position: 'absolute', display: 'flex', justifyContent: 'center' }}
               >
-                {/* Floating animation wrapper */}
                 <motion.div
                   animate={{ 
                     rotateY: isHovered ? [-15, 15, -15] : [-5, 5, -5],
                     rotateX: isHovered ? [5, -5, 5] : [2, -2, 2],
-                    y: isHovered ? [0, -20, 0] : [0, -10, 0],
-                    scale: isHovered ? 1.05 : 1
+                    y: isHovered ? [0, -20, 0] : [0, -10, 0]
                   }}
-                  transition={{ 
-                    duration: isHovered ? 4 : 6, 
-                    repeat: Infinity, 
-                    ease: "easeInOut" 
-                  }}
+                  transition={{ duration: isHovered ? 4 : 6, repeat: Infinity, ease: "easeInOut" }}
                   style={{ width: '100%' }}
                 >
                   <img 
                     src={images[index]} 
-                    alt={`Modern Interior ${index + 1}`} 
+                    alt="Modern Interior" 
                     style={{ 
-                      width: '100%', 
-                      borderRadius: '1.5rem', 
-                      boxShadow: isHovered 
-                        ? '0 60px 100px -30px rgba(0,0,0,0.9), 0px 0px 80px -10px rgba(96, 165, 250, 0.4)'
-                        : '0 40px 80px -20px rgba(0,0,0,0.8), -30px 0px 60px -15px rgba(96, 165, 250, 0.3)',
-                      border: isHovered ? '2px solid rgba(96, 165, 250, 0.5)' : '1px solid rgba(255,255,255,0.1)',
-                      aspectRatio: '16/10',
-                      objectFit: 'cover',
-                      transition: 'all 0.5s ease'
+                      width: '100%', borderRadius: '2rem', 
+                      boxShadow: isHovered ? '0 60px 100px -30px rgba(0,0,0,0.9), 0px 0px 80px -10px rgba(59, 130, 246, 0.4)' : '0 40px 80px -20px rgba(0,0,0,0.8)',
+                      border: '1px solid rgba(255,255,255,0.1)', aspectRatio: '16/10', objectFit: 'cover'
                     }} 
                   />
                 </motion.div>
               </motion.div>
             </AnimatePresence>
-            
-            {/* Hover progress bar indicator */}
-            <div style={{ 
-                position: 'absolute', 
-                bottom: '-25px', 
-                width: '100%',
-                height: '4px',
-                backgroundColor: 'rgba(255,255,255,0.1)',
-                borderRadius: '2px',
-                overflow: 'hidden',
-                opacity: isHovered ? 1 : 0,
-                transition: 'opacity 0.3s'
-            }}>
-                <AnimatePresence mode="popLayout">
-                    {isHovered && (
-                        <motion.div 
-                            key={index}
-                            initial={{ width: "0%" }}
-                            animate={{ width: "100%" }}
-                            transition={{ duration: 2, ease: "linear" }}
-                            style={{ 
-                                height: '100%', 
-                                backgroundColor: 'var(--primary-accent)',
-                                boxShadow: '0 0 10px var(--primary-accent)'
-                            }}
-                        />
-                    )}
-                </AnimatePresence>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Specializations Section */}
-      <section id="specializations" className="section" style={{ backgroundColor: 'var(--background)' }}>
+      {/* Featured Products Section */}
+      {!loadingFeatured && featuredProducts.length > 0 && (
+        <section className="section" style={{ backgroundColor: 'var(--background)' }}>
+            <div className="container">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '4rem' }}>
+                    <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary-accent)', marginBottom: '0.5rem' }}>
+                            <Star size={18} fill="var(--primary-accent)" />
+                            <span style={{ fontWeight: 700, fontSize: '0.8rem', letterSpacing: '2px' }}>TOP PICKS</span>
+                        </div>
+                        <h2 style={{ fontSize: '3rem' }}>Featured Collections</h2>
+                    </div>
+                    <Link to="/products" className="btn btn-outline">Explore All Items</Link>
+                </div>
+
+                <div className="grid grid-3">
+                    {featuredProducts.map(product => (
+                        <motion.div key={product._id} whileHover={{ y: -10 }} className="card glass" style={{ padding: '1.5rem', borderRadius: '1.5rem' }}>
+                            <div style={{ height: '200px', background: 'white', borderRadius: '1rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+                                <img src={product.imageUrl} alt={product.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                            </div>
+                            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{product.name}</h3>
+                            <p style={{ color: 'var(--primary-accent)', fontWeight: 800, fontSize: '1.25rem', marginBottom: '1rem' }}>रू {product.price?.toLocaleString()} NPR</p>
+                            <Link to={`/products/${product._id}`} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
+                                View Product
+                            </Link>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+      )}
+
+      {/* Why Choose Us Section */}
+      <section className="section" style={{ background: 'rgba(30, 41, 59, 0.4)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Our Core Specializations</h2>
-            <p style={{ color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto' }}>
-              We bring you the world's most trusted brands and high-tech solutions for your everyday living.
+          <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
+            <h2 style={{ fontSize: '3.5rem', marginBottom: '1.5rem' }}>Excellence in Service</h2>
+            <p style={{ color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto', fontSize: '1.1rem' }}>
+                We combine industry-leading products with expert consultation to provide a seamless home transformation experience.
             </p>
           </div>
 
           <div className="grid grid-3">
-            <FeatureCard 
-              icon={<Wrench size={40} color="var(--primary-accent)" />}
-              title="Water Purification"
-              desc="Authorized KENT RO distributor providing advanced RO+UV+UF technologies for pure and healthy water."
+            <ServiceCard 
+                icon={<Award size={32} />} 
+                title="Premium Quality" 
+                desc="We only deal with authorized world-class brands like KENT, Elica, and Shikhar Ply to ensure longevity." 
             />
-            <FeatureCard 
-              icon={<PaintBucket size={40} color="var(--primary-accent)" />}
-              title="Kitchen Appliances"
-              desc="Premium chimneys, hobs, and cooking ranges from Elica and Glen for a modern, smoke-free kitchen."
+            <ServiceCard 
+                icon={<Zap size={32} />} 
+                title="Expert Installation" 
+                desc="Our certified technicians ensure that every appliance and hardware piece is installed with precision." 
             />
-            <FeatureCard 
-              icon={<ShieldCheck size={40} color="var(--primary-accent)" />}
-              title="Interior & Hardware"
-              desc="Elegant modular kitchens, wall panels, and premium hardware fittings to elevate your interior aesthetics."
+            <ServiceCard 
+                icon={<Heart size={32} />} 
+                title="After-Sales Care" 
+                desc="Authorized service center status means we provide genuine spare parts and rapid maintenance support." 
             />
-          </div>
-        </div>
-      </section>
-
-      {/* Categories Preview */}
-      <section className="section" style={{ backgroundColor: 'var(--card-bg)' }}>
-        <div className="container">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem' }}>
-            <div>
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Our Categories</h2>
-              <p style={{ color: 'var(--text-muted)' }}>Diverse products for your home and office.</p>
-            </div>
-            <Link to="/products" className="btn btn-outline desktop-only">View All</Link>
-          </div>
-
-          <div className="grid grid-3">
-            {['Water Purifiers', 'Kitchen Appliances', 'Hardware'].map((category, index) => (
-              <motion.div 
-                key={index} 
-                whileHover={{ y: -10 }}
-                className="card glass" 
-                style={{ padding: '2.5rem', textAlign: 'center', cursor: 'pointer' }}
-              >
-                <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'var(--primary)' }}>{category}</h3>
-                <Link to={`/products?category=${category}`} style={{ color: 'var(--primary-accent)', textDecoration: 'none', fontWeight: 600 }}>
-                  Browse Category &rarr;
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Brand Partner Ticker */}
-      <section style={{ backgroundColor: '#0f172a', padding: '3rem 0', overflow: 'hidden', borderY: '1px solid rgba(255,255,255,0.05)' }}>
-        <div className="container">
-          <p style={{ textAlign: 'center', color: 'var(--primary-accent)', fontWeight: 600, fontSize: '0.9rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '2rem' }}>
-            Authorized Partner of World Class Brands
-          </p>
-          <div style={{ display: 'flex', gap: '4rem', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', opacity: 0.8 }}>
-            {['CG Group', 'GLEN India', 'ELICA', 'KENT RO', 'Shikhar Ply'].map((brand) => (
-              <span key={brand} style={{ color: 'white', fontSize: '1.5rem', fontWeight: 800, fontFamily: 'Outfit', letterSpacing: '1px' }}>
-                {brand}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Product Diversity Section */}
-      <section className="section" style={{ background: 'linear-gradient(to bottom, var(--background), #1e293b)' }}>
-        <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '4rem', alignItems: 'center' }}>
-            <div>
-              <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>1000+ Choices for <span style={{ color: 'var(--primary-accent)' }}>Your Dream Home</span></h2>
-              <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginBottom: '2rem' }}>
-                From the structural elegance of <strong>Shikhar Ply</strong> and premium doors to the high-tech efficiency of <strong>KENT RO</strong> and <strong>Elica</strong> kitchen appliances. We bring you a curated collection of everything related to real estate interior.
-              </p>
-              
-              <div className="grid grid-2" style={{ gap: '1.5rem' }}>
-                <div style={diversityCardStyle}>
-                  <h4 style={{ color: 'white' }}>Interior Fittings</h4>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Premium door hinges, handles, and modular fitting hardware.</p>
-                </div>
-                <div style={diversityCardStyle}>
-                  <h4 style={{ color: 'white' }}>Formica & Surfaces</h4>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Over 500+ textures and colors from top-tier brands.</p>
-                </div>
-                <div style={diversityCardStyle}>
-                  <h4 style={{ color: 'white' }}>Kitchen Solutions</h4>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Chimneys, stoves, and hobs from GLEN and Elica.</p>
-                </div>
-                <div style={diversityCardStyle}>
-                  <h4 style={{ color: 'white' }}>Water Purification</h4>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Authorized sales and service for KENT water purifiers.</p>
-                </div>
-              </div>
-            </div>
-            
-            <div style={{ position: 'relative' }}>
-                <div style={{ 
-                    padding: '3rem', 
-                    borderRadius: '2rem', 
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)', 
-                    border: '1px solid rgba(59, 130, 246, 0.2)',
-                    textAlign: 'center'
-                }}>
-                    <h1 style={{ fontSize: '5rem', color: 'var(--primary-accent)', marginBottom: '0' }}>1000+</h1>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 600 }}>Product Varieties</p>
-                    <hr style={{ margin: '1.5rem auto', width: '50px', borderColor: 'var(--primary-accent)' }} />
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Everything you need for your interior projects, under one roof.</p>
-                </div>
-                {/* Decorative blobs */}
-                <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '60px', height: '60px', borderRadius: '50%', background: 'var(--primary-accent)', opacity: 0.2, filter: 'blur(20px)' }}></div>
-            </div>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="section" style={{ backgroundColor: 'var(--card-bg)' }}>
+      <section id="contact" className="section" style={{ backgroundColor: 'var(--background)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Get In Touch</h2>
-            <p style={{ color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto' }}>
-              Have a project in mind? Contact us for expert advice and high-quality materials.
-            </p>
-          </div>
-
-          <div className="grid grid-2">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                <div style={contactCardStyle}>
-                    <HomeIcon size={24} color="var(--primary-accent)" />
-                    <div>
-                        <h4 style={{ marginBottom: '0.25rem' }}>Visit Our Store</h4>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Dharan Line, Itahari - 6, Nepal</p>
-                    </div>
-                </div>
-                <div style={contactCardStyle}>
-                    <PaintBucket size={24} color="var(--primary-accent)" />
-                    <div>
-                        <h4 style={{ marginBottom: '0.25rem' }}>Call Us</h4>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>+977 9810425484, 8746859847</p>
-                    </div>
-                </div>
-                <div style={contactCardStyle}>
-                    <ShieldCheck size={24} color="var(--primary-accent)" />
-                    <div>
-                        <h4 style={{ marginBottom: '0.25rem' }}>Email Us</h4>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>info@sktrade.com.np</p>
-                    </div>
-                </div>
+          <div className="grid grid-2" style={{ gap: '5rem' }}>
+            <div>
+                <h2 style={{ fontSize: '3.5rem', marginBottom: '2rem' }}>Ready to <span style={{ color: 'var(--primary-accent)' }}>Elevate</span> Your Home?</h2>
+                <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '3rem' }}>
+                    Contact our specialists for a free consultation and project estimation.
+                </p>
                 
-                {/* Map Embed */}
-                <div className="card glass" style={{ height: '300px', overflow: 'hidden', padding: '0.5rem' }}>
-                    <iframe 
-                        title="S.K Trade Location"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3564.444738573228!2d87.2718!3d26.671!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ef694801111111%3A0x1111111111111111!2sItahari!5e0!3m2!1sen!2snp!4v1650000000000!5m2!1sen!2snp" 
-                        width="100%" 
-                        height="100%" 
-                        style={{ border: 0, borderRadius: '8px' }} 
-                        allowFullScreen="" 
-                        loading="lazy"
-                    ></iframe>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+                    <ContactInfo icon={<HomeIcon size={24} />} title="Experience Center" detail="Dharan Line, Itahari - 6, Nepal" />
+                    <ContactInfo icon={<PaintBucket size={24} />} title="Customer Support" detail="+977 9810425484, 8746859847" />
+                    <ContactInfo icon={<ShieldCheck size={24} />} title="Email Inquiry" detail="info@sktrade.com.np" />
                 </div>
             </div>
 
-            <div className="card glass" style={{ padding: '2.5rem' }}>
+            <div className="card glass" style={{ padding: '3.5rem', borderRadius: '2rem' }}>
                 <form onSubmit={handleContactSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div className="grid grid-2" style={{ gap: '1rem' }}>
-                        <input name="name" type="text" placeholder="Your Name" style={inputStyle} required />
-                        <input name="email" type="email" placeholder="Your Email" style={inputStyle} required />
+                        <input name="name" type="text" placeholder="Full Name" style={inputStyle} required />
+                        <input name="email" type="email" placeholder="Email Address" style={inputStyle} required />
                     </div>
-                    <input name="subject" type="text" placeholder="Subject" style={inputStyle} required />
-                    <textarea name="message" placeholder="Your Message" rows="5" style={inputStyle} required></textarea>
-                    <button type="submit" className="btn btn-primary" style={{ alignSelf: 'flex-start', padding: '1rem 3rem' }}>
-                        Send Message
+                    <input name="subject" type="text" placeholder="How can we help?" style={inputStyle} required />
+                    <textarea name="message" placeholder="Project Details" rows="5" style={inputStyle} required></textarea>
+                    <button type="submit" className="btn btn-primary" style={{ padding: '1.25rem', borderRadius: '12px', fontSize: '1rem', fontWeight: 700 }}>
+                        Send Inquiry
                     </button>
                 </form>
             </div>
@@ -371,50 +247,37 @@ const Home = () => {
   );
 };
 
-const FeatureCard = ({ icon, title, desc }) => (
-  <motion.div 
-    whileHover={{ scale: 1.05 }}
-    className="card glass" 
-    style={{ padding: '2.5rem', textAlign: 'center', height: '100%' }}
-  >
-    <div style={{ display: 'inline-flex', padding: '1.25rem', borderRadius: '1rem', backgroundColor: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary-accent)', marginBottom: '1.5rem' }}>
-      {icon}
-    </div>
-    <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'white' }}>{title}</h3>
-    <p style={{ color: 'var(--text-muted)', lineHeight: '1.6' }}>{desc}</p>
-  </motion.div>
+const ServiceCard = ({ icon, title, desc }) => (
+    <motion.div whileHover={{ y: -10 }} className="card glass" style={{ padding: '3rem', borderRadius: '2rem', textAlign: 'center' }}>
+        <div style={{ display: 'inline-flex', padding: '1.5rem', borderRadius: '1.5rem', background: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary-accent)', marginBottom: '2rem' }}>
+            {icon}
+        </div>
+        <h3 style={{ fontSize: '1.75rem', marginBottom: '1.25rem' }}>{title}</h3>
+        <p style={{ color: 'var(--text-muted)', lineHeight: '1.8' }}>{desc}</p>
+    </motion.div>
 );
 
-const contactCardStyle = {
-    display: 'flex',
-    gap: '1.5rem',
-    alignItems: 'center',
-    padding: '1.5rem',
-    backgroundColor: 'var(--background)',
-    borderRadius: '12px',
-    border: '1px solid var(--glass-border)',
-    boxShadow: 'var(--shadow)'
-};
-
-const diversityCardStyle = {
-    padding: '1.25rem',
-    backgroundColor: 'rgba(255,255,255,0.03)',
-    borderRadius: '12px',
-    border: '1px solid rgba(255,255,255,0.05)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem'
-};
+const ContactInfo = ({ icon, title, detail }) => (
+    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+        <div style={{ padding: '1rem', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary-accent)' }}>
+            {icon}
+        </div>
+        <div>
+            <h4 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>{title}</h4>
+            <p style={{ color: 'var(--text-muted)' }}>{detail}</p>
+        </div>
+    </div>
+);
 
 const inputStyle = {
-    padding: '0.8rem 1rem',
-    borderRadius: '8px',
+    padding: '1rem 1.25rem',
+    borderRadius: '12px',
     border: '1px solid var(--glass-border)',
-    backgroundColor: 'var(--background)',
+    backgroundColor: 'rgba(15, 23, 42, 0.6)',
     color: 'var(--text-main)',
     outline: 'none',
-    fontFamily: 'inherit',
-    transition: 'border-color 0.3s'
+    fontSize: '1rem',
+    transition: 'all 0.3s'
 };
 
 export default Home;

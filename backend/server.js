@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 
 // Security & Middleware
 app.use(helmet({
-    contentSecurityPolicy: false, // Disable for easier initial deployment, can be hardened later
+    contentSecurityPolicy: false,
 }));
 app.use(cors());
 app.use(express.json());
@@ -28,7 +28,32 @@ if (!MONGODB_URI) {
 }
 
 mongoose.connect(MONGODB_URI)
-    .then(() => console.log('✅ Connected to MongoDB Successfully'))
+    .then(async () => {
+        console.log('✅ Connected to MongoDB Successfully');
+        // Ensure Admin User Exists
+        try {
+            const User = require('./models/User');
+            const adminEmail = 'sktrade@gmail.com';
+            const existingAdmin = await User.findOne({ email: adminEmail });
+            
+            if (existingAdmin) {
+                // Delete and recreate to ensure clean state and correct hashing
+                await User.deleteOne({ email: adminEmail });
+                console.log('🧹 Old admin account removed');
+            }
+            
+            await User.create({
+                name: 'S.K Trade Admin',
+                email: adminEmail,
+                password: 'sktrade2026',
+                role: 'admin'
+            });
+            console.log('👑 Admin account created/reset on startup');
+            
+        } catch (err) {
+            console.error('❌ Failed to ensure admin user:', err.message);
+        }
+    })
     .catch(err => {
         console.error('❌ Could not connect to MongoDB:', err.message);
     });
@@ -40,7 +65,7 @@ const authRoutes = require('./routes/authRoutes');
 app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
 
-// Health check / Production Root
+// Health check
 app.get('/', (req, res) => {
     res.json({ 
         status: 'success', 
