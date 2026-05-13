@@ -29,7 +29,9 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    passwordResetToken: String,
+    passwordResetExpires: Date
 });
 
 // Hash password before saving
@@ -43,6 +45,22 @@ userSchema.pre('save', async function() {
 // Method to compare password
 userSchema.methods.comparePassword = async function(candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
+};
+
+userSchema.methods.createPasswordResetToken = function() {
+    // Generate a 6-digit code for simplicity as requested "reset code"
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Store the hashed version of the code
+    const crypto = require('crypto');
+    this.passwordResetToken = crypto
+        .createHash('sha256')
+        .update(resetCode)
+        .digest('hex');
+
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    return resetCode;
 };
 
 const User = mongoose.model('User', userSchema);

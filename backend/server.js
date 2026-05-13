@@ -36,19 +36,17 @@ mongoose.connect(MONGODB_URI)
             const adminEmail = 'sktrade@gmail.com';
             const existingAdmin = await User.findOne({ email: adminEmail });
             
-            if (existingAdmin) {
-                // Delete and recreate to ensure clean state and correct hashing
-                await User.deleteOne({ email: adminEmail });
-                console.log('🧹 Old admin account removed');
+            if (!existingAdmin) {
+                await User.create({
+                    name: 'S.K Trade Admin',
+                    email: adminEmail,
+                    password: 'sktrade2026',
+                    role: 'admin'
+                });
+                console.log('👑 Admin account initialized');
+            } else {
+                console.log('✅ Admin account already exists');
             }
-            
-            await User.create({
-                name: 'S.K Trade Admin',
-                email: adminEmail,
-                password: 'sktrade2026',
-                role: 'admin'
-            });
-            console.log('👑 Admin account created/reset on startup');
             
         } catch (err) {
             console.error('❌ Failed to ensure admin user:', err.message);
@@ -68,6 +66,19 @@ app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
+
+// Static files for uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Dedicated Upload Route
+const upload = require('./middleware/uploadMiddleware');
+app.post('/api/upload', upload.single('image'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ status: 'error', message: 'No file uploaded' });
+    }
+    const imageUrl = `/uploads/${req.file.filename}`;
+    res.status(200).json({ status: 'success', imageUrl });
+});
 
 // Health check
 app.get('/', (req, res) => {

@@ -1,13 +1,16 @@
 const mongoose = require('mongoose');
 const Category = require('../models/Category');
+const dns = require('dns');
 require('dotenv').config();
+
+// Force Google DNS to bypass potential SRV resolution issues on local networks
+dns.setServers(['8.8.8.8', '8.8.4.4','0.0.0.0']);
 
 const categories = [
     { name: 'Water Purifiers', description: 'Advanced RO+UV+UF water purification systems.' },
     { name: 'Vacuum Cleaners', description: 'Powerful cleaning solutions for home and office.' },
     { name: 'Air Coolers', description: 'Efficient cooling solutions for every space.' },
     { name: 'Kitchen Appliances', description: 'Modern appliances for a smart kitchen.' },
-    { name: 'Hardware', description: 'Durable hardware for all your needs.' },
     { name: 'Interior Decor', description: 'Premium decor to beautify your living space.' }
 ];
 

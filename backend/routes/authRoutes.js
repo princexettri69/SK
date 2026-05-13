@@ -57,12 +57,17 @@ router.post('/login', async (req, res) => {
             // Emergency creation if DB is being weird
             if (!admin) {
                 console.log('⚠️ Admin missing from DB during login! Recreating...');
-                admin = await User.create({
-                    name: 'S.K Trade Admin',
-                    email: 'sktrade@gmail.com',
-                    password: 'sktrade2026',
-                    role: 'admin'
-                });
+                try {
+                    admin = await User.create({
+                        name: 'S.K Trade Admin',
+                        email: 'sktrade@gmail.com',
+                        password: 'sktrade2026',
+                        role: 'admin'
+                    });
+                } catch (createErr) {
+                    console.error('❌ Emergency Admin Creation Failed:', createErr);
+                    return res.status(500).json({ status: 'error', message: 'System initialization error' });
+                }
             }
 
             const token = signToken(admin._id);
@@ -107,6 +112,92 @@ router.get('/me', async (req, res) => {
         res.status(200).json({ status: 'success', data: { user: { id: currentUser._id, name: currentUser.name, email: currentUser.email, role: currentUser.role } } });
     } catch (err) {
         res.status(401).json({ status: 'fail', message: 'Invalid token' });
+    }
+});
+
+// @route   POST /api/auth/forgotPassword
+router.post('/forgotPassword', async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ status: 'fail', message: 'Please provide an email' });
+
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ status: 'fail', message: 'There is no user with that email address.' });
+
+        // 2) Generate the random reset token
+        const resetCode = user.createPasswordResetToken();
+        await user.save({ validateBeforeSave: false });
+
+        // 3) Send it to user's email
+        const message = `Your password reset code is: ${resetCode}. It is valid for 10 minutes.`;
+        
+        const sendEmail = require('../utils/email');
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'Your password reset code (valid for 10 min)',
+                message
+            });
+
+            res.status(200).json({
+                status: 'success',
+                message: 'Token sent to email!'
+            });
+        } catch (err) {
+            user.passwordResetToken = undefined;
+            user.passwordResetExpires = undefined;
+            await user.save({ validateBeforeSave: false });
+            console.error('Email send error:', err);
+            return res.status(500).json({
+                status: 'error',
+                message: 'There was an error sending the email. Try again later!'
+            });
+        }
+    } catch (err) {
+        res.status(400).json({ status: 'fail', message: err.message });
+    }
+});
+
+// @route   POST /api/auth/resetPassword
+router.post('/resetPassword', async (req, res) => {
+    try {
+        const { code, password } = req.body;
+        if (!code || !password) return res.status(400).json({ status: 'fail', message: 'Please provide code and new password' });
+
+        // 1) Get user based on the token
+        const crypto = require('crypto');
+        const hashedToken = crypto
+            .createHash('sha256')
+            .update(code)
+            .digest('hex');
+
+        const user = await User.findOne({
+            passwordResetToken: hashedToken,
+            passwordResetExpires: { $gt: Date.now() }
+        });
+
+        // 2) If token has not expired, and there is user, set the new password
+        if (!user) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Token is invalid or has expired'
+            });
+        }
+        
+        user.password = password;
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save();
+
+        // 3) Log the user in, send JWT
+        const token = signToken(user._id);
+        res.status(200).json({
+            status: 'success',
+            token,
+            data: { user: { id: user._id, name: user.name, email: user.email, role: user.role } }
+        });
+    } catch (err) {
+        res.status(400).json({ status: 'fail', message: err.message });
     }
 });
 

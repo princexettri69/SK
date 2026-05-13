@@ -67,7 +67,7 @@ const Login = () => {
                     <div className="auth-input-group">
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <label className="text-sm font-semibold text-gray-700">Password</label>
-                            <a href="#" className="text-sm font-medium text-indigo-600 hover:underline">Forgot?</a>
+                            <Link to="/forgot-password" style={{ color: 'var(--primary-accent)', textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem' }}>Forgot?</Link>
                         </div>
                         <div className="auth-input-wrapper">
                             <input

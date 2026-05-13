@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Info, Shield, MessageCircle, ShoppingCart, Plus, Minus, CheckCircle2 } from 'lucide-react';
 import { useCart } from '../components/CartContext';
 import { motion } from 'framer-motion';
+import { resolveImageUrl } from '../utils/resolveImage';
 import toast from 'react-hot-toast';
 
 const ProductDetails = () => {
@@ -68,7 +69,7 @@ const ProductDetails = () => {
                     >
                         <div className="card glass-dark" style={{ padding: '2rem', borderRadius: '2.5rem', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '500px' }}>
                             <img 
-                                src={product.imageUrl} 
+                                src={resolveImageUrl(product.imageUrl)} 
                                 alt={product.name} 
                                 style={{ width: '100%', maxHeight: '450px', objectFit: 'contain' }} 
                             />

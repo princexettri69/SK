@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Search, Filter, AlertCircle, Package, ShoppingCart, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCart } from '../components/CartContext';
+import { resolveImageUrl } from '../utils/resolveImage';
 import toast from 'react-hot-toast';
 
 const Products = () => {
@@ -150,7 +151,7 @@ const Products = () => {
                 <Link to={`/products/${product._id}`} style={{ textDecoration: 'none', color: 'inherit', height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <div style={{ height: '200px', backgroundColor: 'white', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
                     <img 
-                      src={product.imageUrl} alt={product.name} 
+                      src={resolveImageUrl(product.imageUrl)} alt={product.name} 
                       style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                       onError={(e) => { e.target.src = 'https://via.placeholder.com/400'; }}
                     />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowRight, Wrench, PaintBucket, Home as HomeIcon, ShieldCheck, Star, Award, Zap, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { resolveImageUrl } from '../utils/resolveImage';
 import heroImage1 from '../assets/home-hero.jpg';
 import heroImage2 from '../assets/home-gallery-1.jpg';
 import heroImage3 from '../assets/home-gallery-2.avif';
@@ -166,7 +167,7 @@ const Home = () => {
                     {featuredProducts.map(product => (
                         <motion.div key={product._id} whileHover={{ y: -10 }} className="card glass" style={{ padding: '1.5rem', borderRadius: '1.5rem' }}>
                             <div style={{ height: '200px', background: 'white', borderRadius: '1rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-                                <img src={product.imageUrl} alt={product.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                                <img src={resolveImageUrl(product.imageUrl)} alt={product.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
                             </div>
                             <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{product.name}</h3>
                             <p style={{ color: 'var(--primary-accent)', fontWeight: 800, fontSize: '1.25rem', marginBottom: '1rem' }}>रू {product.price?.toLocaleString()} NPR</p>

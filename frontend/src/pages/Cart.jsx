@@ -3,6 +3,7 @@ import { useCart } from '../components/CartContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { resolveImageUrl } from '../utils/resolveImage';
 
 const Cart = () => {
     const { cart, removeFromCart, updateQuantity, getCartTotal } = useCart();
@@ -50,7 +51,7 @@ const Cart = () => {
                                     style={{ padding: '1.5rem', display: 'flex', gap: '2rem', alignItems: 'center', borderRadius: '1.5rem' }}
                                 >
                                     <div style={{ width: '120px', height: '120px', background: 'white', borderRadius: '1rem', padding: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <img src={item.imageUrl} alt={item.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                        <img src={resolveImageUrl(item.imageUrl)} alt={item.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                     </div>
                                     
                                     <div style={{ flex: 1 }}>

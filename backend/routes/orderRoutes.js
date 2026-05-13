@@ -68,6 +68,14 @@ router.post('/', protect, async (req, res) => {
         
         const createdOrder = await order.save();
         
+        // Detailed Backend Logging for Admin
+        console.log('\n📦 --- NEW ORDER RECEIVED ---');
+        console.log(`ID: ${createdOrder._id}`);
+        console.log(`User: ${req.user.name} (${req.user.email})`);
+        console.log(`Total: रू ${createdOrder.totalPrice.toLocaleString()}`);
+        console.log(`Items: ${items.length} units`);
+        console.log('-----------------------------\n');
+        
         // Update stock and check for low stock notifications
         for (const item of items) {
             const product = await Product.findById(item.product);
