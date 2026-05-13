@@ -28,14 +28,11 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={scrolled ? 'scrolled' : ''} style={{
+    <nav className={`${scrolled ? 'scrolled' : ''} glass`} style={{
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '0 2rem',
-      backgroundColor: scrolled ? 'var(--glass)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(10px)' : 'none',
-      borderBottom: scrolled ? '1px solid var(--glass-border)' : 'none',
       height: '80px',
       position: 'fixed',
       top: 0,
@@ -89,7 +86,7 @@ const Navbar = () => {
               <User size={16} />
               <span>{user.name.split(' ')[0]}</span>
             </div>
-            <button onClick={handleLogout} className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
+            <button onClick={handleLogout} className="btn btn-primary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
               Logout
             </button>
           </div>
@@ -103,21 +100,22 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Mobile Toggle */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', zIndex: 1001 }}>
-        <Link to="/cart" className="mobile-only" style={{ position: 'relative', color: 'var(--text-main)' }}>
+      {/* Mobile Actions */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', zIndex: 1001 }}>
+        <Link to="/cart" className="show-mobile" style={{ position: 'relative', color: 'var(--text-main)' }}>
           <ShoppingCart size={24} />
           {getCartCount() > 0 && (
             <span style={{
                 position: 'absolute', top: '-8px', right: '-10px', backgroundColor: 'var(--primary-accent)',
                 color: 'white', fontSize: '0.65rem', fontWeight: 900, borderRadius: '50%',
-                width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '2px solid var(--background)'
             }}>
               {getCartCount()}
             </span>
           )}
         </Link>
-        <div className="mobile-toggle" style={{ cursor: 'pointer' }} onClick={() => setIsOpen(!isOpen)}>
+        <div className="mobile-toggle" style={{ cursor: 'pointer', color: 'var(--text-main)' }} onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </div>
       </div>
@@ -126,37 +124,56 @@ const Navbar = () => {
       <AnimatePresence>
         {isOpen && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeMenu}
-              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(8px)', zIndex: 1000 }}
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              onClick={closeMenu}
+              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(2, 6, 23, 0.95)', backdropFilter: 'blur(12px)', zIndex: 1000 }}
             />
             
-            <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            <motion.div 
+              initial={{ x: '100%' }} 
+              animate={{ x: 0 }} 
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               style={{
-                position: 'fixed', top: '10%', left: '5%', right: '5%', background: 'rgba(30, 41, 59, 0.98)',
-                backdropFilter: 'blur(20px)', borderRadius: '2.5rem', border: '1px solid rgba(255, 255, 255, 0.1)',
-                padding: '3rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', zIndex: 1001
+                position: 'fixed', top: 0, right: 0, width: '80%', maxWidth: '350px', height: '100vh', 
+                background: 'var(--card-bg)', backdropFilter: 'blur(20px)', borderLeft: '1px solid var(--glass-border)',
+                padding: '5rem 2rem 2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', zIndex: 1001,
+                boxShadow: '-10px 0 50px rgba(0,0,0,0.5)'
               }}
             >
-              <img src="/sk-logo.png" alt="S.K Trade" style={{ height: '50px', marginBottom: '1rem' }} />
+              <button onClick={closeMenu} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'transparent', border: 'none', color: 'var(--text-main)', cursor: 'pointer' }}>
+                <X size={32} />
+              </button>
+
+              <Link to="/" style={mobileLinkStyle(location.pathname === '/')} onClick={closeMenu}>Home</Link>
+              <Link to="/products" style={mobileLinkStyle(location.pathname === '/products')} onClick={closeMenu}>Products Catalog</Link>
+              {user && <Link to="/my-orders" style={mobileLinkStyle(location.pathname === '/my-orders')} onClick={closeMenu}>My Orders</Link>}
+              {user?.role === 'admin' && <Link to="/admin" style={mobileLinkStyle(location.pathname === '/admin')} onClick={closeMenu}>Admin Control Panel</Link>}
               
-              <Link to="/" style={linkStyle(location.pathname === '/')} onClick={closeMenu}>Home</Link>
-              <Link to="/products" style={linkStyle(location.pathname === '/products')} onClick={closeMenu}>Our Catalog</Link>
-              {user && <Link to="/my-orders" style={linkStyle(location.pathname === '/my-orders')} onClick={closeMenu}>My Purchase History</Link>}
-              {user?.role === 'admin' && <Link to="/admin" style={linkStyle(location.pathname === '/admin')} onClick={closeMenu}>Admin Panel</Link>}
-              
-              <div style={{ width: '100%', height: '1px', background: 'rgba(255,255,255,0.1)', margin: '1rem 0' }}></div>
+              <div style={{ height: '1px', background: 'var(--glass-border)', margin: '1rem 0' }}></div>
 
               {user ? (
-                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
-                  <div style={{ color: 'var(--text-muted)' }}>Logged in as <span style={{ color: 'white', fontWeight: 600 }}>{user.name}</span></div>
-                  <button onClick={handleLogout} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', borderRadius: '1.25rem', padding: '1rem' }}>
-                    <LogOut size={18} /> Secure Logout
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-main)' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--primary-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>
+                      {user.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 600 }}>{user.name}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{user.role}</div>
+                    </div>
+                  </div>
+                  <button onClick={handleLogout} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
+                    <LogOut size={18} /> Logout
                   </button>
                 </div>
               ) : (
-                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <Link to="/login" className="btn btn-outline" style={{ width: '100%', justifyContent: 'center', borderRadius: '1.25rem' }} onClick={closeMenu}>Login</Link>
-                  <Link to="/signup" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', borderRadius: '1.25rem' }} onClick={closeMenu}>Sign Up</Link>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <Link to="/login" className="btn btn-outline" style={{ width: '100%', justifyContent: 'center' }} onClick={closeMenu}>Login</Link>
+                  <Link to="/signup" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={closeMenu}>Sign Up</Link>
                 </div>
               )}
             </motion.div>
@@ -180,6 +197,17 @@ const linkStyle = (current) => ({
   transition: 'all 0.3s ease',
   fontFamily: 'Inter, sans-serif',
   fontSize: '0.95rem'
+});
+
+const mobileLinkStyle = (current) => ({
+  textDecoration: 'none',
+  color: current ? 'var(--primary-accent)' : 'var(--text-main)',
+  fontWeight: 700,
+  padding: '1rem',
+  borderRadius: '12px',
+  background: current ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+  fontSize: '1.1rem',
+  transition: 'all 0.2s'
 });
 
 export default Navbar;

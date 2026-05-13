@@ -27,16 +27,16 @@ const About = () => {
     return (
         <div className="animate-fade">
             {/* Header Section */}
-            <section className="hero-gradient" style={{ paddingTop: '120px', paddingBottom: '5rem', textAlign: 'center' }}>
+            <section className="hero-gradient" style={{ paddingTop: '120px', paddingBottom: '3rem', textAlign: 'center' }}>
                 <div className="container">
                     <motion.h1 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        style={{ fontSize: '3.5rem', marginBottom: '1.5rem', background: 'linear-gradient(to right, #60a5fa, #f8fafc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+                        style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', marginBottom: '1.5rem', background: 'linear-gradient(to right, #60a5fa, #f8fafc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', lineHeight: 1.2 }}
                     >
                         About S.K Trade & Suppliers
                     </motion.h1>
-                    <p style={{ maxWidth: '800px', margin: '0 auto', color: 'var(--text-muted)', fontSize: '1.2rem' }}>
+                    <p style={{ maxWidth: '800px', margin: '0 auto', color: 'var(--text-muted)', fontSize: 'clamp(1rem, 4vw, 1.2rem)' }}>
                         Leading authorized distributor and solutions provider for premium interior, hardware, and home appliances in Itahari, Nepal.
                     </p>
                 </div>
@@ -44,31 +44,33 @@ const About = () => {
 
             {/* Content Section */}
             <section className="section">
-                <div className="container grid grid-2" style={{ alignItems: 'center' }}>
-                    <div>
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>Decades of Excellence in Quality & Trust</h2>
-                        <p style={{ marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
-                            S.K Trade & Suppliers has been the cornerstone of hardware and interior solutions for years. We pride ourselves on representing the world's most trusted brands, ensuring that every home in our region has access to durable, high-tech, and aesthetic solutions.
-                        </p>
-                        <div className="grid grid-2" style={{ gap: '1.5rem', marginBottom: '2rem' }}>
-                            <div style={statStyle}>
-                                <Award size={24} color="var(--primary-accent)" />
-                                <div>
-                                    <h4 style={{ color: 'white' }}>Authorized</h4>
-                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Genuine Brand Partner</p>
+                <div className="container">
+                    <div className="mobile-stack" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '4rem', alignItems: 'center' }}>
+                        <div>
+                            <h2 style={{ fontSize: 'clamp(1.75rem, 6vw, 2.5rem)', marginBottom: '1.5rem' }}>Decades of Excellence in Quality & Trust</h2>
+                            <p style={{ marginBottom: '1.5rem', color: 'var(--text-muted)', lineHeight: '1.8' }}>
+                                S.K Trade & Suppliers has been the cornerstone of hardware and interior solutions for years. We pride ourselves on representing the world's most trusted brands, ensuring that every home in our region has access to durable, high-tech, and aesthetic solutions.
+                            </p>
+                            <div className="grid grid-2" style={{ gap: '1rem', marginBottom: '2rem' }}>
+                                <div style={statStyle}>
+                                    <Award size={24} color="var(--primary-accent)" />
+                                    <div>
+                                        <h4 style={{ color: 'white', fontSize: '0.95rem' }}>Authorized</h4>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Genuine Brand Partner</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div style={statStyle}>
-                                <Users size={24} color="var(--primary-accent)" />
-                                <div>
-                                    <h4 style={{ color: 'white' }}>5000+</h4>
-                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Happy Customers</p>
+                                <div style={statStyle}>
+                                    <Users size={24} color="var(--primary-accent)" />
+                                    <div>
+                                        <h4 style={{ color: 'white', fontSize: '0.95rem' }}>5000+</h4>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Happy Customers</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="card glass" style={{ height: '400px', overflow: 'hidden' }}>
-                        <img src={work1} alt="About Us" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <div className="card glass" style={{ height: 'clamp(250px, 40vw, 400px)', overflow: 'hidden', borderRadius: '1.5rem' }}>
+                            <img src={work1} alt="About Us" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
                     </div>
                 </div>
             </section>
@@ -77,20 +79,20 @@ const About = () => {
             <section className="section" style={{ backgroundColor: '#0f172a' }}>
                 <div className="container">
                     <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Our Brand Collaborations</h2>
+                        <h2 style={{ fontSize: 'clamp(1.75rem, 6vw, 2.5rem)', marginBottom: '1rem' }}>Our Brand Collaborations</h2>
                         <p style={{ color: 'var(--text-muted)' }}>We represent the best in the industry to bring you quality you can trust.</p>
                     </div>
-                    <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                         {brands.map((brand, i) => (
                             <motion.div 
                                 key={i}
-                                whileHover={{ scale: 1.1 }}
+                                whileHover={{ scale: 1.05 }}
                                 style={{ 
                                     backgroundColor: 'white', 
-                                    padding: '1.5rem', 
+                                    padding: '1rem', 
                                     borderRadius: '1rem', 
-                                    width: '180px', 
-                                    height: '100px', 
+                                    width: 'clamp(140px, 20vw, 180px)', 
+                                    height: 'clamp(80px, 12vw, 100px)', 
                                     display: 'flex', 
                                     alignItems: 'center', 
                                     justifyContent: 'center',
@@ -108,11 +110,11 @@ const About = () => {
             <section className="section">
                 <div className="container">
                     <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Our Sitework Album</h2>
+                        <h2 style={{ fontSize: 'clamp(1.75rem, 6vw, 2.5rem)', marginBottom: '1rem' }}>Our Sitework Album</h2>
                         <p style={{ color: 'var(--text-muted)' }}>A glimpse into the premium projects and interiors we've supplied and consulted.</p>
                     </div>
                     
-                    <div className="grid grid-4" style={{ gap: '1.5rem' }}>
+                    <div className="grid grid-4" style={{ gap: '1.25rem' }}>
                         {album.map((img, i) => (
                             <motion.div 
                                 key={i}
@@ -121,7 +123,7 @@ const About = () => {
                                 whileHover={{ y: -10 }}
                                 transition={{ duration: 0.5 }}
                                 className="card glass"
-                                style={{ height: '250px', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}
+                                style={{ height: 'clamp(200px, 25vw, 250px)', cursor: 'pointer', position: 'relative', overflow: 'hidden', borderRadius: '1rem' }}
                             >
                                 <img src={img} alt={`Work ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 <div style={{ 
@@ -130,7 +132,8 @@ const About = () => {
                                     padding: '1rem', 
                                     background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
                                     color: 'white',
-                                    fontSize: '0.9rem'
+                                    fontSize: '0.8rem',
+                                    fontWeight: 600
                                 }}>
                                     Completed Project #{i + 1}
                                 </div>

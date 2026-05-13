@@ -66,18 +66,18 @@ const Checkout = () => {
                     <ChevronLeft size={20} /> Back to Cart
                 </button>
 
-                <header style={{ marginBottom: '3rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#10b981', marginBottom: '0.5rem' }}>
+                <header style={{ marginBottom: '3rem', textAlign: window.innerWidth <= 768 ? 'center' : 'left' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: window.innerWidth <= 768 ? 'center' : 'flex-start', gap: '0.75rem', color: '#10b981', marginBottom: '0.5rem' }}>
                         <ShieldCheck size={20} />
                         <span style={{ fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.8rem' }}>Secure Transaction</span>
                     </div>
-                    <h1 style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '-1px' }}>Finalize Order</h1>
+                    <h1 style={{ fontSize: 'clamp(2.5rem, 8vw, 3rem)', fontWeight: 900, letterSpacing: '-1px' }}>Finalize Order</h1>
                 </header>
 
-                <div className="grid" style={{ gridTemplateColumns: '1.5fr 1fr', gap: '3rem' }}>
+                <div className="mobile-stack" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '3rem' }}>
                     {/* Shipping Form */}
                     <div>
-                        <div className="card glass-dark" style={{ padding: '2.5rem', borderRadius: '2rem' }}>
+                        <div className="card glass-dark" style={{ padding: 'clamp(1.5rem, 5vw, 2.5rem)', borderRadius: '2rem' }}>
                             <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                 <MapPin size={24} color="var(--primary-accent)" /> Shipping Intelligence
                             </h3>
@@ -118,7 +118,7 @@ const Checkout = () => {
                                     type="submit" 
                                     disabled={loading}
                                     className="btn btn-primary" 
-                                    style={{ padding: '1.25rem', marginTop: '1.5rem', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 800 }}
+                                    style={{ padding: '1.25rem', marginTop: '1.5rem', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 800, justifyContent: 'center' }}
                                 >
                                     {loading ? 'Processing...' : 'Place Secure Order'} <ArrowRight size={20} />
                                 </button>
@@ -134,20 +134,20 @@ const Checkout = () => {
                                 {cart.map(item => (
                                     <div key={item._id} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                         <div style={{ width: '50px', height: '50px', background: 'white', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px' }}>
-                                            <img src={item.imageUrl} alt={item.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                            <img src={resolveImageUrl(item.imageUrl)} alt={item.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                         </div>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ fontSize: '0.9rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '140px' }}>{item.name}</div>
+                                        <div style={{ flex: 1, overflow: 'hidden' }}>
+                                            <div style={{ fontSize: '0.9rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</div>
                                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Qty: {item.quantity}</div>
                                         </div>
-                                        <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>रू {(item.price * item.quantity).toLocaleString()}</div>
+                                        <div style={{ fontWeight: 700, fontSize: '0.9rem', flexShrink: 0 }}>रू {(item.price * item.quantity).toLocaleString()}</div>
                                     </div>
                                 ))}
                             </div>
                             
                             <div style={{ height: '1px', background: 'var(--glass-border)', marginBottom: '1.5rem' }}></div>
                             
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: 900 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: 900, flexWrap: 'wrap', gap: '0.5rem' }}>
                                 <span>Total NPR</span>
                                 <span style={{ color: 'var(--primary-accent)' }}>{getCartTotal().toLocaleString()}</span>
                             </div>
@@ -170,7 +170,7 @@ const CheckoutInput = ({ label, ...props }) => (
             {...props} 
             style={{ 
                 width: '100%', padding: '1rem', borderRadius: '12px', background: 'rgba(15, 23, 42, 0.6)', 
-                border: '1px solid var(--glass-border)', color: 'white', outline: 'none' 
+                border: '1px solid var(--glass-border)', color: 'white', outline: 'none', transition: 'all 0.3s'
             }} 
         />
     </div>

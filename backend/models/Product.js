@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
     category: {
         type: String,
         required: [true, 'A product must belong to a category'],
-        enum: ['Water Purifiers', 'Vacuum Cleaners', 'Air Coolers', 'Kitchen Appliances', 'Interior Decor']
+        trim: true
     },
     description: {
         type: String,
