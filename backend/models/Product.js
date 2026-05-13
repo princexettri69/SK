@@ -33,6 +33,11 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    stock: {
+        type: Number,
+        required: [true, 'A product must have stock'],
+        default: 20
+    },
     createdAt: {
         type: Date,
         default: Date.now

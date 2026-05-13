@@ -1,80 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Filter, AlertCircle } from 'lucide-react';
+import { Search, Filter, AlertCircle, Package, ShoppingCart, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useCart } from '../components/CartContext';
+import toast from 'react-hot-toast';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categories, setCategories] = useState(['All']);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
+  const { addToCart } = useCart();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   
-  const categories = ['All', 'Water Purifiers', 'Vacuum Cleaners', 'Air Coolers', 'Kitchen Appliances', 'Hardware', 'Interior Decor'];
-  
-  const staticFallback = [
-    {
-        _id: '1',
-        name: 'KENT GRAND STAR-B',
-        category: 'Water Purifiers',
-        description: 'Advanced RO+UV+UF+TDS Controller with Double UV Protection.',
-        features: ['RO+UV+UF+TDS', 'Double UV', '9L Storage', 'Mineral RO'],
-        imageUrl: '/images/products/kent-grand-star-b.jpg',
-        price: 24500,
-        specifications: { 'Duty Cycle': '100L/day', 'Storage': '9L', 'Mounting': 'Wall' }
-    },
-    {
-        _id: '2',
-        name: 'KENT PEARL STAR',
-        category: 'Water Purifiers',
-        description: 'Auto-flushing RO water purifier with detachable tank.',
-        features: ['Auto-Flushing', '11L Tank', 'Digital Display'],
-        imageUrl: '/images/products/kent-pearl-star.jpg',
-        price: 21000,
-        specifications: { 'Storage': '11L', 'Mounting': 'Wall/Table' }
-    },
-    {
-        _id: '10',
-        name: 'CG CGCT90MAX Chimney',
-        category: 'Kitchen Appliances',
-        description: 'Advanced filterless chimney with heat auto clean.',
-        features: ['Filterless', 'Heat Clean', 'Gesture Control'],
-        imageUrl: '/images/products/cg-cgct90max.jpg',
-        price: 15990,
-        specifications: { 'Suction': '1600m3/hr', 'Size': '90cm' }
-    }
-  ];
-
   const location = useLocation();
 
   useEffect(() => {
-    fetchProducts();
-    
-    // Check for query params
+    fetchInitialData();
+  }, []);
+
+  useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const categoryParam = searchParams.get('category');
-    if (categoryParam && categories.includes(categoryParam)) {
+    if (categoryParam) {
       setSelectedCategory(categoryParam);
     }
-  }, [location]);
+  }, [location, categories]);
 
   useEffect(() => {
     filterProducts();
   }, [searchTerm, selectedCategory, products]);
 
-  const fetchProducts = async () => {
+  const fetchInitialData = async () => {
+    setLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
-      if (!response.ok) throw new Error('Failed to fetch products');
-      const data = await response.json();
-      setProducts(data);
+      const [productsRes, categoriesRes] = await Promise.all([
+        fetch(`${import.meta.env.VITE_API_URL}/api/products`),
+        fetch(`${import.meta.env.VITE_API_URL}/api/categories`)
+      ]);
+
+      if (!productsRes.ok || !categoriesRes.ok) throw new Error('Failed to fetch catalog data');
+      
+      const productsData = await productsRes.json();
+      const categoriesData = await categoriesRes.json();
+      
+      setProducts(productsData);
+      setCategories(['All', ...categoriesData.map(c => c.name)]);
       setLoading(false);
     } catch (err) {
       console.error(err);
-      setProducts(staticFallback);
-      setError('Note: Displaying demo products because the MongoDB connection failed. Please check your Atlas IP Whitelist.');
+      setError('System synchronization failed. Some assets may not be visible.');
       setLoading(false);
     }
   };
@@ -94,9 +72,19 @@ const Products = () => {
     setFilteredProducts(result);
   };
 
+  const handleQuickAdd = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product, 1);
+    toast.success(`${product.name} added to cart`, {
+      icon: <ShoppingCart size={18} color="#3b82f6" />
+    });
+  };
+
   if (loading) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ fontSize: '1.5rem', color: 'var(--primary-accent)', fontWeight: 600 }}>Loading Catalog...</div>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
+      <div className="loader"></div>
+      <span style={{ marginLeft: '1rem', fontWeight: 600, color: 'var(--primary-accent)' }}>Syncing Catalog...</span>
     </div>
   );
 
@@ -105,55 +93,33 @@ const Products = () => {
       <div className="container">
         {error && (
           <div style={{ 
-            backgroundColor: 'rgba(239, 68, 68, 0.1)', 
-            color: '#ef4444', 
-            padding: '1rem', 
-            borderRadius: '8px', 
-            marginBottom: '2rem',
-            textAlign: 'center',
-            border: '1px solid rgba(239, 68, 68, 0.2)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.5rem'
+            backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '1rem', borderRadius: '8px', marginBottom: '2rem',
+            textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'
           }}>
             <AlertCircle size={20} />
             <span style={{ fontSize: '0.9rem' }}>{error}</span>
           </div>
         )}
-        <h1 style={{ fontSize: '3rem', marginBottom: '1rem', textAlign: 'center' }}>Our Products</h1>
         
-        {/* Filters and Search */}
+        <header style={{ textAlign: 'center', marginBottom: '4rem' }}>
+          <h1 style={{ fontSize: '3.5rem', fontWeight: 900, marginBottom: '1rem', letterSpacing: '-1px' }}>Global Catalog</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Browse our complete collection of premium home and industrial solutions.</p>
+        </header>
+        
         <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          marginBottom: '3rem',
-          flexWrap: 'wrap',
-          gap: '1rem',
-          background: 'var(--card-bg)',
-          padding: '1.5rem',
-          borderRadius: '12px',
-          border: '1px solid var(--glass-border)',
-          boxShadow: 'var(--shadow)'
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem', flexWrap: 'wrap', gap: '1.5rem',
+          background: 'rgba(30, 41, 59, 0.4)', padding: '1.5rem', borderRadius: '1.5rem', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow)'
         }}>
-          {/* Category Filter */}
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', flex: 1 }}>
-            <Filter size={24} color="var(--primary-accent)" style={{ marginRight: '0.5rem' }} />
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', flex: 1, alignItems: 'center' }}>
+            <Filter size={20} color="var(--primary-accent)" style={{ marginRight: '0.5rem' }} />
             {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
                 style={{
-                  padding: '0.5rem 1rem',
-                  borderRadius: '20px',
-                  border: `1px solid ${selectedCategory === cat ? 'var(--primary-accent)' : 'var(--glass-border)'}`,
-                  background: selectedCategory === cat ? 'var(--primary-accent)' : 'transparent',
-                  color: selectedCategory === cat ? 'white' : 'var(--text-main)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  fontFamily: 'Outfit',
-                  fontWeight: 500
+                  padding: '0.5rem 1.25rem', borderRadius: '50px', border: `1px solid ${selectedCategory === cat ? 'var(--primary-accent)' : 'var(--glass-border)'}`,
+                  background: selectedCategory === cat ? 'var(--primary-accent)' : 'transparent', color: selectedCategory === cat ? 'white' : 'var(--text-main)',
+                  cursor: 'pointer', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', fontWeight: 600, fontSize: '0.85rem'
                 }}
               >
                 {cat}
@@ -161,88 +127,78 @@ const Products = () => {
             ))}
           </div>
 
-          {/* Search */}
-          <div className="mobile-full" style={{ position: 'relative', width: '300px' }}>
-            <Search size={18} color="var(--text-muted)" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} />
+          <div className="mobile-full" style={{ position: 'relative', width: '320px' }}>
+            <Search size={18} color="var(--text-muted)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
             <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              type="text" placeholder="Search catalog..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
               style={{
-                width: '100%',
-                padding: '0.75rem 1rem 0.75rem 2.5rem',
-                borderRadius: '8px',
-                border: '1px solid var(--glass-border)',
-                background: 'var(--background)',
-                color: 'var(--text-main)',
-                fontSize: '1rem',
-                outline: 'none'
+                width: '100%', padding: '0.85rem 1rem 0.85rem 2.5rem', borderRadius: '12px', border: '1px solid var(--glass-border)',
+                background: 'rgba(15, 23, 42, 0.6)', color: 'var(--text-main)', fontSize: '1rem', outline: 'none', transition: 'all 0.3s'
               }}
             />
           </div>
         </div>
 
-        {/* Product Grid */}
-        <div className="grid grid-4" style={{ gap: '1.25rem' }}>
-          {filteredProducts.map((product) => (
-            <motion.div 
-              key={product._id || product.id} 
-              whileHover={{ y: -8 }}
-              className="card glass card-hover flex flex-col" 
-              style={{ 
-                height: '100%', 
-                overflow: 'hidden', 
-                borderRadius: '1rem',
-                border: '1px solid var(--glass-border)',
-                background: 'rgba(30, 41, 59, 0.4)'
-              }}
-            >
-              <Link to={`/products/${product._id || product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <div className="image-zoom" style={{ height: '160px', backgroundColor: 'white', position: 'relative' }}>
-                  <img 
-                    src={product.imageUrl} 
-                    alt={product.name} 
-                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '0.5rem' }}
-                    onError={(e) => { e.target.src = 'https://via.placeholder.com/400'; }}
-                  />
-                </div>
-                
-                <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ marginBottom: '0.5rem' }}>
-                    <span style={{ 
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)', 
-                        color: 'var(--primary-accent)', 
-                        padding: '0.2rem 0.5rem', 
-                        borderRadius: '4px', 
-                        fontSize: '0.65rem', 
-                        fontWeight: 700, 
-                        textTransform: 'uppercase' 
-                    }}>
-                      {product.category}
-                    </span>
-                    <h3 style={{ fontSize: '1rem', color: 'white', margin: '0.5rem 0 0 0', lineHeight: '1.3', fontWeight: 600 }}>{product.name}</h3>
+        <div className="grid grid-4" style={{ gap: '1.5rem' }}>
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <motion.div 
+                key={product._id} whileHover={{ y: -10, scale: 1.02 }}
+                className="card glass card-hover" 
+                style={{ height: '100%', overflow: 'hidden', borderRadius: '1.5rem', border: '1px solid var(--glass-border)', background: 'rgba(30, 41, 59, 0.4)', display: 'flex', flexDirection: 'column', position: 'relative' }}
+              >
+                <Link to={`/products/${product._id}`} style={{ textDecoration: 'none', color: 'inherit', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ height: '200px', backgroundColor: 'white', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
+                    <img 
+                      src={product.imageUrl} alt={product.name} 
+                      style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                      onError={(e) => { e.target.src = 'https://via.placeholder.com/400'; }}
+                    />
+                    <button 
+                      onClick={(e) => handleQuickAdd(e, product)}
+                      style={{ position: 'absolute', top: '10px', right: '10px', background: 'var(--primary-accent)', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', cursor: 'pointer', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)', zIndex: 5 }}
+                    >
+                      <ShoppingCart size={20} />
+                    </button>
                   </div>
                   
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '1.25rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: '1.5' }}>
-                    {product.description}
-                  </p>
+                  <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ marginBottom: '0.75rem' }}>
+                      <span style={{ 
+                          backgroundColor: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary-accent)', padding: '0.3rem 0.6rem', 
+                          borderRadius: '6px', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px'
+                      }}>
+                        {product.category}
+                      </span>
+                      <h3 style={{ fontSize: '1.1rem', color: 'white', margin: '0.75rem 0 0 0', lineHeight: '1.4', fontWeight: 700 }}>{product.name}</h3>
+                    </div>
+                    
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: '1.6' }}>
+                      {product.description}
+                    </p>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                    <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary-accent)' }}>
-                      रू {product.price?.toLocaleString() || 'N/A'} <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>NPR</span>
-                    </span>
+                    <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--primary-accent)' }}>
+                          रू {product.price?.toLocaleString() || 'N/A'}
+                        </span>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>NPR (INC. TAX)</span>
+                      </div>
+                      <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.5rem', borderRadius: '50%' }}>
+                        <ArrowRight size={18} color="var(--primary-accent)" />
+                      </div>
+                    </div>
                   </div>
-
-                  <div style={{ marginTop: 'auto' }}>
-                    <span className="btn btn-primary" style={{ width: '100%', padding: '0.6rem', fontSize: '0.8rem', justifyContent: 'center', borderRadius: '0.5rem', fontWeight: 600 }}>
-                      View Details
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                </Link>
+              </motion.div>
+            ))
+          ) : (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '5rem', color: 'var(--text-muted)' }}>
+              <Package size={48} style={{ marginBottom: '1rem', opacity: 0.3 }} />
+              <h3>No products found in this sector</h3>
+              <p>Try adjusting your search or filters.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
