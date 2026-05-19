@@ -73,15 +73,6 @@ const ProductDetails = () => {
                                 alt={product.name} 
                                 style={{ width: '100%', maxHeight: '450px', objectFit: 'contain' }} 
                             />
-                        </div>
-                        <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', justifyContent: 'center' }}>
-                            <div style={{ padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem' }}>
-                                <Shield size={16} color="#10b981" /> 2-YEAR WARRANTY
-                            </div>
-                            <div style={{ padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem' }}>
-                                <CheckCircle2 size={16} color="#10b981" /> AUTHENTIC ASSET
-                            </div>
-                        </div>
                     </motion.div>
 
                     {/* Information Cluster */}
@@ -130,30 +121,34 @@ const ProductDetails = () => {
                             </div>
                         </div>
 
-                        <div style={{ marginBottom: '3rem' }}>
-                            <h3 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 800 }}>
-                                <Info size={22} color="var(--primary-accent)" /> Technical Highlights
-                            </h3>
-                            <div className="grid grid-2" style={{ gap: '1.25rem' }}>
-                                {product.features?.map((feature, idx) => (
-                                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem', color: 'white', fontWeight: 500 }}>
-                                        <CheckCircle2 size={18} color="#10b981" /> {feature}
-                                    </div>
-                                ))}
+                        {product.features && product.features.length > 0 && (
+                            <div style={{ marginBottom: '3rem' }}>
+                                <h3 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 800 }}>
+                                    <Info size={22} color="var(--primary-accent)" /> Technical Highlights
+                                </h3>
+                                <div className="grid grid-2" style={{ gap: '1.25rem' }}>
+                                    {product.features.map((feature, idx) => (
+                                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1rem', color: 'white', fontWeight: 500 }}>
+                                            <CheckCircle2 size={18} color="#10b981" /> {feature}
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
-                        <div className="card glass-dark" style={{ padding: '2.5rem', borderRadius: '2.5rem', marginBottom: '3rem' }}>
-                            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>Technical Datasheet</h3>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                                {product.specifications && Object.entries(product.specifications).map(([key, value]) => (
-                                    <div key={key} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.75rem' }}>
-                                        <span style={{ fontWeight: 600, color: 'var(--text-muted)' }}>{key}</span>
-                                        <span style={{ fontWeight: 700, color: 'white' }}>{value}</span>
-                                    </div>
-                                ))}
+                        {product.specifications && Object.keys(product.specifications).length > 0 && (
+                            <div className="card glass-dark" style={{ padding: '2.5rem', borderRadius: '2.5rem', marginBottom: '3rem' }}>
+                                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>Technical Datasheet</h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                                    {Object.entries(product.specifications).map(([key, value]) => (
+                                        <div key={key} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.75rem' }}>
+                                            <span style={{ fontWeight: 600, color: 'var(--text-muted)' }}>{key}</span>
+                                            <span style={{ fontWeight: 700, color: 'white' }}>{value}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         <div style={{ display: 'flex', gap: '1rem' }}>
                             <a 
