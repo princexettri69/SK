@@ -52,6 +52,7 @@ const AdminDashboard = () => {
     category: '',
     description: '',
     price: '',
+    stock: '',
     imageUrl: '',
     features: '',
     specifications: ''
@@ -144,6 +145,7 @@ const AdminDashboard = () => {
       const productData = {
         ...newProduct,
         price: Number(newProduct.price),
+        stock: Number(newProduct.stock) || 20,
         features: typeof newProduct.features === 'string' ? newProduct.features.split(',').map(f => f.trim()).filter(f => f) : newProduct.features,
         specifications: typeof newProduct.specifications === 'string' ? newProduct.specifications.split(',').reduce((acc, curr) => {
           const [key, val] = curr.split(':').map(s => s.trim());
@@ -158,7 +160,7 @@ const AdminDashboard = () => {
 
       toast.success('Asset deployed');
       addLog(`New asset: ${newProduct.name}`, 'success');
-      setNewProduct({ name: '', category: categories[0]?.name || '', description: '', price: '', imageUrl: '', features: '', specifications: '' });
+      setNewProduct({ name: '', category: categories[0]?.name || '', description: '', price: '', stock: '', imageUrl: '', features: '', specifications: '' });
       setActiveTab('products');
       fetchData();
     } catch (err) {
@@ -173,6 +175,7 @@ const AdminDashboard = () => {
       const productData = {
         ...editingProduct,
         price: Number(editingProduct.price),
+        stock: Number(editingProduct.stock) || 0,
         features: typeof editingProduct.features === 'string' ? editingProduct.features.split(',').map(f => f.trim()).filter(f => f) : editingProduct.features,
         specifications: typeof editingProduct.specifications === 'string' ? editingProduct.specifications.split(',').reduce((acc, curr) => {
           const [key, val] = curr.split(':').map(s => s.trim());
@@ -541,28 +544,39 @@ const AdminDashboard = () => {
 
           {activeTab === 'add-product' && (
             <motion.div key="add-product" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="card glass-dark" style={{ padding: '3rem', borderRadius: '24px' }}>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '2.5rem' }}>Deploy Asset</h3>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '2.5rem', color: 'var(--primary-accent)' }}>Deploy New Product</h3>
               <form onSubmit={handleAddProduct} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                <AdminInput label="Name" value={newProduct.name} onChange={(e) => setNewProduct({...newProduct, name: e.target.value})} required />
-                <div className="grid grid-2" style={{ gap: '2rem' }}>
-                  <AdminInput label="Price" type="number" value={newProduct.price} onChange={(e) => setNewProduct({...newProduct, price: e.target.value})} required />
+                <AdminInput label="Product Name" value={newProduct.name} onChange={(e) => setNewProduct({...newProduct, name: e.target.value})} placeholder="e.g. Premium Drill Machine" required />
+                <div className="grid grid-3" style={{ gap: '2rem' }}>
+                  <AdminInput label="Price (NPR)" type="number" value={newProduct.price} onChange={(e) => setNewProduct({...newProduct, price: e.target.value})} placeholder="e.g. 5000" required />
+                  <AdminInput label="Stock Quantity" type="number" value={newProduct.stock} onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})} placeholder="e.g. 20" required />
                   <div style={{ width: '100%' }}>
-                    <label style={{ display: 'block', marginBottom: '0.75rem', fontSize: '0.85rem', fontWeight: 800, color: '#94a3b8' }}>Sector</label>
+                    <label style={{ display: 'block', marginBottom: '0.75rem', fontSize: '0.85rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>Sector</label>
                     <select 
                       value={newProduct.category} 
                       onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
-                      style={{ width: '100%', padding: '1.1rem', borderRadius: '16px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: 'white' }}
+                      style={{ width: '100%', padding: '1.1rem', borderRadius: '16px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', outline: 'none' }}
                     >
                       {categories.map(c => <option key={c._id} value={c.name}>{c.name}</option>)}
                     </select>
                   </div>
                 </div>
-                <AdminFilePicker label="Image" value={newProduct.imageUrl} uploading={uploading} onChange={async (file) => {
+                
+                <AdminFilePicker label="Product Image" value={newProduct.imageUrl} uploading={uploading} onChange={async (file) => {
                   const url = await handleImageUpload(file);
-                  if (url) setNewProduct({...newProduct, imageUrl: url});
+                  if (url) setNewProduct(prev => ({...prev, imageUrl: url}));
                 }} />
-                <AdminInput label="Description" textarea value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} required />
-                <button type="submit" className="btn btn-primary" style={{ padding: '1.25rem', borderRadius: '16px', fontWeight: 800 }}>Deploy</button>
+
+                <AdminInput label="Product Description" textarea value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} placeholder="Detailed overview of the product..." required />
+                
+                <div className="grid grid-2" style={{ gap: '2rem' }}>
+                  <AdminInput label="Features (Comma separated)" textarea value={newProduct.features} onChange={(e) => setNewProduct({...newProduct, features: e.target.value})} placeholder="Heavy duty, Cordless, 2-Year Warranty" />
+                  <AdminInput label="Specifications (Key:Value, comma separated)" textarea value={newProduct.specifications} onChange={(e) => setNewProduct({...newProduct, specifications: e.target.value})} placeholder="Power: 20V, Weight: 1.5kg, Color: Yellow" />
+                </div>
+
+                <button type="submit" disabled={uploading} className="btn btn-primary" style={{ padding: '1.25rem', borderRadius: '16px', fontWeight: 800, opacity: uploading ? 0.7 : 1 }}>
+                  {uploading ? 'Processing Image...' : 'Deploy Product'}
+                </button>
               </form>
             </motion.div>
           )}
@@ -605,13 +619,27 @@ const AdminDashboard = () => {
               <button onClick={() => setEditingProduct(null)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'transparent', border: 'none', color: 'white' }}><X size={28} /></button>
               <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '2.5rem' }}>Update Asset</h3>
               <form onSubmit={handleUpdateProduct} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                <AdminInput label="Name" value={editingProduct.name} onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})} required />
-                <AdminInput label="Valuation" type="number" value={editingProduct.price} onChange={(e) => setEditingProduct({...editingProduct, price: e.target.value})} required />
+                <AdminInput label="Product Name" value={editingProduct.name} onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})} required />
+                <div className="grid grid-2" style={{ gap: '2rem' }}>
+                  <AdminInput label="Price (NPR)" type="number" value={editingProduct.price} onChange={(e) => setEditingProduct({...editingProduct, price: e.target.value})} required />
+                  <AdminInput label="Stock Quantity" type="number" value={editingProduct.stock || ''} onChange={(e) => setEditingProduct({...editingProduct, stock: e.target.value})} required />
+                </div>
+                
                 <AdminFilePicker label="Update Image" value={editingProduct.imageUrl} uploading={uploading} onChange={async (file) => {
                   const url = await handleImageUpload(file);
-                  if (url) setEditingProduct({...editingProduct, imageUrl: url});
+                  if (url) setEditingProduct(prev => ({...prev, imageUrl: url}));
                 }} />
-                <button type="submit" className="btn btn-primary" style={{ padding: '1rem', fontWeight: 700 }}><Save size={18} /> Save Changes</button>
+
+                <AdminInput label="Description" textarea value={editingProduct.description} onChange={(e) => setEditingProduct({...editingProduct, description: e.target.value})} required />
+                
+                <div className="grid grid-2" style={{ gap: '2rem' }}>
+                  <AdminInput label="Features (Comma separated)" textarea value={typeof editingProduct.features === 'string' ? editingProduct.features : editingProduct.features?.join(', ')} onChange={(e) => setEditingProduct({...editingProduct, features: e.target.value})} />
+                  <AdminInput label="Specifications (Key:Value, comma separated)" textarea value={typeof editingProduct.specifications === 'string' ? editingProduct.specifications : (editingProduct.specifications ? Object.entries(editingProduct.specifications).map(([k,v]) => `${k}:${v}`).join(', ') : '')} onChange={(e) => setEditingProduct({...editingProduct, specifications: e.target.value})} />
+                </div>
+
+                <button type="submit" disabled={uploading} className="btn btn-primary" style={{ padding: '1rem', fontWeight: 700, opacity: uploading ? 0.7 : 1 }}>
+                  <Save size={18} /> {uploading ? 'Processing Image...' : 'Save Changes'}
+                </button>
               </form>
             </motion.div>
           </div>
