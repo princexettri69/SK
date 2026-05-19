@@ -73,6 +73,7 @@ const ProductDetails = () => {
                                 alt={product.name} 
                                 style={{ width: '100%', maxHeight: '450px', objectFit: 'contain' }} 
                             />
+                        </div>
                     </motion.div>
 
                     {/* Information Cluster */}

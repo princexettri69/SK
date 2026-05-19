@@ -570,7 +570,7 @@ const AdminDashboard = () => {
                 <AdminInput label="Product Description" textarea value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} placeholder="Detailed overview of the product..." required />
                 
                 <div className="grid grid-2" style={{ gap: '2rem' }}>
-                  <AdminInput label="Features (Comma separated)" textarea value={newProduct.features} onChange={(e) => setNewProduct({...newProduct, features: e.target.value})} placeholder="Heavy duty, Cordless, 2-Year Warranty" />
+                  <AdminInput label="Features (Comma separated)" textarea value={newProduct.features} onChange={(e) => setNewProduct({...newProduct, features: e.target.value})} placeholder="Waterproof, Weather resistant, Premium Wood, High Durability" />
                   <AdminInput label="Specifications (Key:Value, comma separated)" textarea value={newProduct.specifications} onChange={(e) => setNewProduct({...newProduct, specifications: e.target.value})} placeholder="Power: 20V, Weight: 1.5kg, Color: Yellow" />
                 </div>
 
