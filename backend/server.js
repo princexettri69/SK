@@ -77,7 +77,7 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ status: 'error', message: 'No file uploaded' });
     }
-    const imageUrl = `/images/products/${req.file.filename}`;
+    const imageUrl = `/uploads/${req.file.filename}`;
     res.status(200).json({ status: 'success', imageUrl });
 });
 
