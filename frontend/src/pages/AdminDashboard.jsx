@@ -47,16 +47,7 @@ const AdminDashboard = () => {
   const [uploading, setUploading] = useState(false);
   const [logs, setLogs] = useState([]);
 
-  const [newProduct, setNewProduct] = useState({
-    name: '',
-    category: '',
-    description: '',
-    price: '',
-    stock: '',
-    imageUrl: '',
-    features: '',
-    specifications: ''
-  });
+  const [newProduct, setNewProduct] = useState({ name: '', category: '', description: '', price: '', stock: '', imageUrl: '', features: '', specifications: '', variants: [] });
 
   const [newCategory, setNewCategory] = useState({
     name: '',
@@ -160,7 +151,7 @@ const AdminDashboard = () => {
 
       toast.success('Asset deployed');
       addLog(`New asset: ${newProduct.name}`, 'success');
-      setNewProduct({ name: '', category: categories[0]?.name || '', description: '', price: '', stock: '', imageUrl: '', features: '', specifications: '' });
+      setNewProduct({ name: '', category: categories[0]?.name || '', description: '', price: '', stock: '', imageUrl: '', features: '', specifications: '', variants: [] });
       setActiveTab('products');
       fetchData();
     } catch (err) {
@@ -240,10 +231,32 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleUpdateOrderStatus = async (id, status) => {
+  const handleVariantChange = (index, field, value, isEditing) => {
+    const setter = isEditing ? setEditingProduct : setNewProduct;
+    setter(prev => {
+      const newVariants = [...(prev.variants || [])];
+      if (field === 'price') value = Number(value) || 0;
+      newVariants[index] = { ...newVariants[index], [field]: value };
+      return { ...prev, variants: newVariants };
+    });
+  };
+  const addVariant = (isEditing) => {
+    const setter = isEditing ? setEditingProduct : setNewProduct;
+    setter(prev => ({ ...prev, variants: [...(prev.variants || []), { size: '', price: '', unit: '' }] }));
+  };
+  const removeVariant = (index, isEditing) => {
+    const setter = isEditing ? setEditingProduct : setNewProduct;
+    setter(prev => {
+      const newVariants = [...(prev.variants || [])];
+      newVariants.splice(index, 1);
+      return { ...prev, variants: newVariants };
+    });
+  };
+
+  const handleUpdateOrderStatus = async (orderId, newStatus) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.patch(`${import.meta.env.VITE_API_URL}/api/orders/${id}/status`, { status }, {
+      await axios.patch(`${import.meta.env.VITE_API_URL}/api/orders/${orderId}/status`, { status: newStatus }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Order status updated');
@@ -574,6 +587,13 @@ const AdminDashboard = () => {
                   <AdminInput label="Specifications (Key:Value, comma separated)" textarea value={newProduct.specifications} onChange={(e) => setNewProduct({...newProduct, specifications: e.target.value})} placeholder="Power: 20V, Weight: 1.5kg, Color: Yellow" />
                 </div>
 
+                <VariantsEditor 
+                  variants={newProduct.variants} 
+                  onChange={(idx, field, val) => handleVariantChange(idx, field, val, false)}
+                  onAdd={() => addVariant(false)}
+                  onRemove={(idx) => removeVariant(idx, false)}
+                />
+
                 <button type="submit" disabled={uploading} className="btn btn-primary" style={{ padding: '1.25rem', borderRadius: '16px', fontWeight: 800, opacity: uploading ? 0.7 : 1 }}>
                   {uploading ? 'Processing Image...' : 'Deploy Product'}
                 </button>
@@ -636,6 +656,13 @@ const AdminDashboard = () => {
                   <AdminInput label="Features (Comma separated)" textarea value={typeof editingProduct.features === 'string' ? editingProduct.features : editingProduct.features?.join(', ')} onChange={(e) => setEditingProduct({...editingProduct, features: e.target.value})} />
                   <AdminInput label="Specifications (Key:Value, comma separated)" textarea value={typeof editingProduct.specifications === 'string' ? editingProduct.specifications : (editingProduct.specifications ? Object.entries(editingProduct.specifications).map(([k,v]) => `${k}:${v}`).join(', ') : '')} onChange={(e) => setEditingProduct({...editingProduct, specifications: e.target.value})} />
                 </div>
+
+                <VariantsEditor 
+                  variants={editingProduct.variants} 
+                  onChange={(idx, field, val) => handleVariantChange(idx, field, val, true)}
+                  onAdd={() => addVariant(true)}
+                  onRemove={(idx) => removeVariant(idx, true)}
+                />
 
                 <button type="submit" disabled={uploading} className="btn btn-primary" style={{ padding: '1rem', fontWeight: 700, opacity: uploading ? 0.7 : 1 }}>
                   <Save size={18} /> {uploading ? 'Processing Image...' : 'Save Changes'}
@@ -732,14 +759,30 @@ const AdminFilePicker = ({ label, value, onChange, uploading }) => (
   </div>
 );
 
-const AdminInput = ({ label, textarea, ...props }) => (
+const AdminInput = ({ label, textarea, required, ...props }) => (
   <div style={{ width: '100%' }}>
-    <label style={{ display: 'block', marginBottom: '0.75rem', fontSize: '0.85rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>{label}</label>
+    <label style={{ display: 'block', marginBottom: '0.75rem', fontSize: '0.85rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>{label} {required && <span style={{ color: '#ef4444' }}>*</span>}</label>
     {textarea ? (
-      <textarea {...props} style={{ width: '100%', padding: '1.25rem', borderRadius: '16px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', minHeight: '100px' }} />
+      <textarea {...props} style={{ width: '100%', padding: '1.1rem', borderRadius: '16px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', outline: 'none', minHeight: '120px', resize: 'vertical' }} />
     ) : (
-      <input {...props} style={{ width: '100%', padding: '1.1rem', borderRadius: '16px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: 'white' }} />
+      <input {...props} style={{ width: '100%', padding: '1.1rem', borderRadius: '16px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', outline: 'none' }} />
     )}
+  </div>
+);
+
+const VariantsEditor = ({ variants, onChange, onAdd, onRemove }) => (
+  <div style={{ marginTop: '1rem', padding: '1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)' }}>
+    <h4 style={{ marginBottom: '1rem', color: 'var(--primary-accent)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Product Variants (Optional)</h4>
+    <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '1rem' }}>Add different sizes/options with specific pricing.</p>
+    {variants && variants.map((v, idx) => (
+      <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
+        <input placeholder="Size (e.g. 18mm)" value={v.size} onChange={e => onChange(idx, 'size', e.target.value)} style={{ padding: '0.75rem', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--glass-border)', color: 'white' }} />
+        <input placeholder="Price (e.g. 75)" type="number" value={v.price} onChange={e => onChange(idx, 'price', e.target.value)} style={{ padding: '0.75rem', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--glass-border)', color: 'white' }} />
+        <input placeholder="Unit (e.g. per sq ft)" value={v.unit} onChange={e => onChange(idx, 'unit', e.target.value)} style={{ padding: '0.75rem', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--glass-border)', color: 'white' }} />
+        <button type="button" onClick={() => onRemove(idx)} style={{ padding: '0.5rem', background: 'rgba(239,68,68,0.2)', color: '#ef4444', border: 'none', borderRadius: '8px', cursor: 'pointer' }}><Trash2 size={16} /></button>
+      </div>
+    ))}
+    <button type="button" onClick={onAdd} style={{ padding: '0.75rem 1.5rem', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>+ Add Variant</button>
   </div>
 );
 

@@ -20,6 +20,11 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'A product must have a price']
     },
+    variants: [{
+        size: { type: String, required: true },
+        price: { type: Number, required: true },
+        unit: { type: String, default: '' }
+    }],
     imageUrl: {
         type: String,
         default: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'

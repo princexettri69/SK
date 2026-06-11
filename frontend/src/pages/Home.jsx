@@ -17,7 +17,7 @@ const Home = () => {
   const [loadingFeatured, setLoadingFeatured] = useState(true);
 
   useEffect(() => {
-    document.title = "S.K Trade & Suppliers | Premium Hardware & Interior";
+    document.title = "S.K Trade And Suppliers | Premium Hardware & Interior";
     fetchFeatured();
   }, []);
 
@@ -99,7 +99,7 @@ const Home = () => {
                 className="hero-subtext"
                 style={{ fontSize: 'clamp(1rem, 4vw, 1.2rem)', color: 'var(--text-muted)', marginBottom: '2.5rem', maxWidth: '600px' }}
               >
-                S.K Trade and Suppliers provides premium hardware, interior decor, kitchen appliances, and advanced water purification solutions for modern homes.
+                S.K Trade And Suppliers provides premium hardware, interior decor, kitchen appliances, and advanced water purification solutions for modern homes.
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

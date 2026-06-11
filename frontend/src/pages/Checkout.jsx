@@ -33,7 +33,8 @@ const Checkout = () => {
                 items: cart.map(item => ({
                     product: item._id,
                     quantity: item.quantity,
-                    price: item.price
+                    price: item.price,
+                    variant: item.selectedVariant ? { size: item.selectedVariant.size, unit: item.selectedVariant.unit } : undefined
                 })),
                 shippingAddress,
                 totalPrice: getCartTotal()
@@ -137,7 +138,9 @@ const Checkout = () => {
                                             <img src={resolveImageUrl(item.imageUrl)} alt={item.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                         </div>
                                         <div style={{ flex: 1, overflow: 'hidden' }}>
-                                            <div style={{ fontSize: '0.9rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</div>
+                                            <div style={{ fontSize: '0.9rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                {item.name} {item.selectedVariant && <span style={{ color: '#3b82f6', fontSize: '0.8rem' }}>({item.selectedVariant.size})</span>}
+                                            </div>
                                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Qty: {item.quantity}</div>
                                         </div>
                                         <div style={{ fontWeight: 700, fontSize: '0.9rem', flexShrink: 0 }}>रू {(item.price * item.quantity).toLocaleString()}</div>

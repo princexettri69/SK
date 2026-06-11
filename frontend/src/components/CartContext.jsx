@@ -22,27 +22,28 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = (product, quantity = 1) => {
         setCart(prevCart => {
-            const existingItem = prevCart.find(item => item._id === product._id);
+            const cartItemId = product.selectedVariant ? `${product._id}-${product.selectedVariant.size}` : product._id;
+            const existingItem = prevCart.find(item => item.cartItemId === cartItemId);
             if (existingItem) {
                 return prevCart.map(item =>
-                    item._id === product._id
+                    item.cartItemId === cartItemId
                         ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             }
-            return [...prevCart, { ...product, quantity }];
+            return [...prevCart, { ...product, quantity, cartItemId }];
         });
     };
 
-    const removeFromCart = (productId) => {
-        setCart(prevCart => prevCart.filter(item => item._id !== productId));
+    const removeFromCart = (cartItemId) => {
+        setCart(prevCart => prevCart.filter(item => item.cartItemId !== cartItemId));
     };
 
-    const updateQuantity = (productId, quantity) => {
+    const updateQuantity = (cartItemId, quantity) => {
         if (quantity < 1) return;
         setCart(prevCart =>
             prevCart.map(item =>
-                item._id === productId ? { ...item, quantity } : item
+                item.cartItemId === cartItemId ? { ...item, quantity } : item
             )
         );
     };

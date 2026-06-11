@@ -43,7 +43,7 @@ const Cart = () => {
                         <AnimatePresence>
                             {cart.map((item) => (
                                 <motion.div 
-                                    key={item._id}
+                                    key={item.cartItemId || item._id}
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 20 }}
@@ -72,9 +72,11 @@ const Cart = () => {
                                     
                                     <div style={{ flex: 1, minWidth: '200px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                            <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>{item.name}</h3>
+                                            <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>
+                                                {item.name} {item.selectedVariant && <span style={{ color: '#3b82f6', fontSize: '0.9rem', fontWeight: 600 }}>({item.selectedVariant.size})</span>}
+                                            </h3>
                                             <button 
-                                                onClick={() => removeFromCart(item._id)}
+                                                onClick={() => removeFromCart(item.cartItemId || item._id)}
                                                 style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.5rem' }}
                                             >
                                                 <Trash2 size={20} />
@@ -85,14 +87,14 @@ const Cart = () => {
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(255,255,255,0.05)', padding: '0.4rem 0.8rem', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
                                                 <button 
-                                                    onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                                                    onClick={() => updateQuantity(item.cartItemId || item._id, item.quantity - 1)}
                                                     style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', padding: '0.2rem' }}
                                                 >
                                                     <Minus size={14} />
                                                 </button>
                                                 <span style={{ fontWeight: 800, width: '20px', textAlign: 'center', fontSize: '0.9rem' }}>{item.quantity}</span>
                                                 <button 
-                                                    onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                                                    onClick={() => updateQuantity(item.cartItemId || item._id, item.quantity + 1)}
                                                     style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', padding: '0.2rem' }}
                                                 >
                                                     <Plus size={14} />

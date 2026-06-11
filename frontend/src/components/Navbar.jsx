@@ -41,7 +41,7 @@ const Navbar = () => {
       boxSizing: 'border-box'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', zIndex: 1001 }}>
-        <img src="/sk-logo.png" alt="S.K Trade Logo" className="brand-logo" style={{ height: '60px', width: 'auto' }} />
+        <img src="/sk-logo.png" alt="S.K Trade And Suppliers Logo" className="brand-logo" style={{ height: '60px', width: 'auto' }} />
         <Link to="/" className="brand-text" style={{ 
           textDecoration: 'none', 
           color: 'var(--text-main)', 
@@ -49,7 +49,7 @@ const Navbar = () => {
           fontSize: '1.5rem', 
           fontWeight: 700 
         }} onClick={closeMenu}>
-          S.K Trade
+          S.K Trade And Suppliers
         </Link>
       </div>
 

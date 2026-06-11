@@ -50,7 +50,7 @@ const Signup = () => {
             >
                 <div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <img src={skLogo} alt="S.K Trade Logo" style={{ height: '100px', width: 'auto', marginBottom: '1.5rem' }} />
+                        <img src={skLogo} alt="S.K Trade And Suppliers Logo" style={{ height: '100px', width: 'auto', marginBottom: '1.5rem' }} />
                     </div>
                     <h2 className="text-center text-3xl font-extrabold text-gray-900">
                         Create Account
@@ -143,7 +143,7 @@ const Signup = () => {
                 </form>
 
                 <div className="auth-footer">
-                    Already have an account? <Link to="/login" className="auth-link">Sign in instead</Link>
+                    Already have an account? <Link to="/login" className="auth-link">Sign in</Link>
                 </div>
             </motion.div>
         </div>

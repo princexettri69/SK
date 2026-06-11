@@ -38,7 +38,7 @@ const Login = () => {
             >
                 <div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <img src={skLogo} alt="S.K Trade Logo" style={{ height: '100px', width: 'auto', marginBottom: '1.5rem' }} />
+                        <img src={skLogo} alt="S.K Trade And Suppliers Logo" style={{ height: '100px', width: 'auto', marginBottom: '1.5rem' }} />
                     </div>
                     <h2 className="text-center text-3xl font-extrabold text-gray-900">
                         Welcome Back
@@ -101,7 +101,7 @@ const Login = () => {
                 </form>
 
                 <div className="auth-footer">
-                    New to S.K Trade? <Link to="/signup" className="auth-link">Create an account</Link>
+                    New to S.K Trade And Suppliers? <Link to="/signup" className="auth-link">Create an account</Link>
                 </div>
             </motion.div>
         </div>

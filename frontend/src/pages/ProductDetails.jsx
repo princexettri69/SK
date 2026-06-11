@@ -14,6 +14,7 @@ const ProductDetails = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [quantity, setQuantity] = useState(1);
+    const [selectedVariant, setSelectedVariant] = useState(null);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -22,6 +23,9 @@ const ProductDetails = () => {
                 if (!response.ok) throw new Error('Product not found');
                 const data = await response.json();
                 setProduct(data);
+                if (data.variants && data.variants.length > 0) {
+                    setSelectedVariant(data.variants[0]);
+                }
                 setLoading(false);
             } catch (err) {
                 console.error(err);
@@ -33,8 +37,19 @@ const ProductDetails = () => {
     }, [id]);
 
     const handleAddToCart = () => {
-        addToCart(product, quantity);
-        toast.success(`${quantity} ${product.name} added to cart`, {
+        if (product.variants && product.variants.length > 0 && !selectedVariant) {
+            toast.error('Please select a variant');
+            return;
+        }
+        
+        const itemToAdd = {
+            ...product,
+            price: selectedVariant ? selectedVariant.price : product.price,
+            selectedVariant: selectedVariant
+        };
+        
+        addToCart(itemToAdd, quantity);
+        toast.success(`${quantity} ${product.name}${selectedVariant ? ` (${selectedVariant.size})` : ''} added to cart`, {
             icon: <ShoppingCart size={20} color="#3b82f6" />,
             duration: 3000
         });
@@ -90,9 +105,11 @@ const ProductDetails = () => {
                         
                         <div style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'baseline', gap: '1rem' }}>
                             <span style={{ fontSize: '3rem', fontWeight: 900, color: 'var(--primary-accent)' }}>
-                                रू {product.price?.toLocaleString()}
+                                रू {selectedVariant ? selectedVariant.price.toLocaleString() : product.price?.toLocaleString()}
                             </span>
-                            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '1px' }}>NPR (INC. TAXES)</span>
+                            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '1px' }}>
+                                NPR (INC. TAXES) {selectedVariant && selectedVariant.unit ? ` / ${selectedVariant.unit}` : ''}
+                            </span>
                         </div>
 
                         <p style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--text-muted)', marginBottom: '3rem' }}>
@@ -103,6 +120,32 @@ const ProductDetails = () => {
                         <div className="card glass-dark" style={{ padding: '2rem', borderRadius: '2rem', marginBottom: '3rem', border: '1px solid var(--glass-border)' }}>
                             <h4 style={{ marginBottom: '1.5rem', fontWeight: 800, fontSize: '0.9rem', color: 'white', textTransform: 'uppercase', letterSpacing: '1px' }}>Configuration</h4>
                             
+                            {product.variants && product.variants.length > 0 && (
+                                <div style={{ marginBottom: '2rem' }}>
+                                    <h5 style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Select Size</h5>
+                                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                        {product.variants.map((variant, idx) => (
+                                            <button 
+                                                key={idx}
+                                                onClick={() => setSelectedVariant(variant)}
+                                                style={{
+                                                    padding: '0.75rem 1.5rem',
+                                                    borderRadius: '12px',
+                                                    background: selectedVariant === variant ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255,255,255,0.05)',
+                                                    border: `1px solid ${selectedVariant === variant ? '#3b82f6' : 'var(--glass-border)'}`,
+                                                    color: selectedVariant === variant ? '#3b82f6' : 'white',
+                                                    fontWeight: 700,
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                            >
+                                                {variant.size}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
                             <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', flexWrap: 'wrap' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1.5rem', borderRadius: '15px', border: '1px solid var(--glass-border)' }}>
                                     <button onClick={() => setQuantity(q => Math.max(1, q - 1))} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}><Minus size={20} /></button>
@@ -153,7 +196,7 @@ const ProductDetails = () => {
 
                         <div style={{ display: 'flex', gap: '1rem' }}>
                             <a 
-                                href={`https://wa.me/9779705451066?text=${encodeURIComponent(`Hello S.K Trade, I am interested in ${product.name}. Can you provide more details?`)}`}
+                                href={`https://wa.me/9779705451066?text=${encodeURIComponent(`Hello S.K Trade And Suppliers, I am interested in ${product.name}. Can you provide more details?`)}`}
                                 target="_blank" rel="noopener noreferrer"
                                 className="btn btn-outline" 
                                 style={{ width: '100%', padding: '1.25rem', fontSize: '1.1rem', justifyContent: 'center', display: 'flex', alignItems: 'center', gap: '0.75rem', borderRadius: '15px', color: '#25D366', borderColor: '#25D366' }}

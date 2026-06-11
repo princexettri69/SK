@@ -21,6 +21,10 @@ const orderSchema = new mongoose.Schema({
             price: {
                 type: Number,
                 required: true
+            },
+            variant: {
+                size: String,
+                unit: String
             }
         }
     ],

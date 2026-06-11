@@ -21,7 +21,7 @@ const Products = () => {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = 'Global Catalog | S.K Trade & Suppliers';
+    document.title = 'Global Catalog | S.K Trade And Suppliers';
     fetchInitialData();
   }, []);
 

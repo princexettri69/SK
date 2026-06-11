@@ -35,7 +35,7 @@ const ForgotPassword = () => {
             >
                 <div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <img src={skLogo} alt="S.K Trade Logo" style={{ height: '80px', width: 'auto', marginBottom: '1.5rem' }} />
+                        <img src={skLogo} alt="S.K Trade And Suppliers Logo" style={{ height: '80px', width: 'auto', marginBottom: '1.5rem' }} />
                     </div>
                     <h2 className="text-center text-3xl font-extrabold text-gray-900">
                         Forgot Password?

@@ -11,7 +11,7 @@ import work4 from '../assets/home-gallery-3.jpg';
 
 const About = () => {
     React.useEffect(() => {
-        document.title = "About Us | S.K Trade & Suppliers";
+        document.title = "About Us | S.K Trade And Suppliers";
     }, []);
 
     const brands = [
@@ -34,7 +34,7 @@ const About = () => {
                         animate={{ opacity: 1, y: 0 }}
                         style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', marginBottom: '1.5rem', background: 'linear-gradient(to right, #60a5fa, #f8fafc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', lineHeight: 1.2 }}
                     >
-                        About S.K Trade & Suppliers
+                        About S.K Trade And Suppliers
                     </motion.h1>
                     <p style={{ maxWidth: '800px', margin: '0 auto', color: 'var(--text-muted)', fontSize: 'clamp(1rem, 4vw, 1.2rem)' }}>
                         Leading authorized distributor and solutions provider for premium interior, hardware, and home appliances in Itahari, Nepal.
@@ -49,7 +49,7 @@ const About = () => {
                         <div>
                             <h2 style={{ fontSize: 'clamp(1.75rem, 6vw, 2.5rem)', marginBottom: '1.5rem' }}>Decades of Excellence in Quality & Trust</h2>
                             <p style={{ marginBottom: '1.5rem', color: 'var(--text-muted)', lineHeight: '1.8' }}>
-                                S.K Trade & Suppliers has been the cornerstone of hardware and interior solutions for years. We pride ourselves on representing the world's most trusted brands, ensuring that every home in our region has access to durable, high-tech, and aesthetic solutions.
+                                S.K Trade And Suppliers has been the cornerstone of hardware and interior solutions for years. We pride ourselves on representing the world's most trusted brands, ensuring that every home in our region has access to durable, high-tech, and aesthetic solutions.
                             </p>
                             <div className="grid grid-2" style={{ gap: '1rem', marginBottom: '2rem' }}>
                                 <div style={statStyle}>

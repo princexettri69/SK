@@ -15,7 +15,7 @@ const Footer = () => {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
             <img src={skLogo} alt="S.K Trade Logo" style={{ height: '50px', width: 'auto' }} />
-            <span style={{ fontFamily: 'Outfit', fontSize: '1.5rem', fontWeight: 700 }}>S.K Trade</span>
+            <span style={{ fontFamily: 'Outfit', fontSize: '1.5rem', fontWeight: 700 }}>S.K Trade And Suppliers</span>
           </div>
           <p style={{ color: 'var(--secondary)', marginBottom: '1.5rem' }}>
             Your one-stop destination for fully functional interior decorations, hardware, and premium materials.
@@ -58,7 +58,7 @@ const Footer = () => {
         borderTop: '1px solid rgba(255,255,255,0.1)',
         color: 'var(--secondary)'
       }}>
-        <p>&copy; {new Date().getFullYear()} S.K Trade and Suppliers. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} S.K Trade And Suppliers. All rights reserved.</p>
       </div>
     </footer>
   );
