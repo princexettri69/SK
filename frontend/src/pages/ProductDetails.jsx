@@ -75,7 +75,7 @@ const ProductDetails = () => {
                     <ArrowLeft size={18} /> BACK TO CATALOG
                 </Link>
 
-                <div className="grid grid-2" style={{ alignItems: 'start', gap: '5rem' }}>
+                <div className="grid grid-2 mobile-stack" style={{ alignItems: 'start', gap: '3rem' }}>
                     {/* Image Perspective */}
                     <motion.div 
                         initial={{ opacity: 0, scale: 0.95 }}
