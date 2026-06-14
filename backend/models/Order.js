@@ -34,9 +34,22 @@ const orderSchema = new mongoose.Schema({
         default: 0.0
     },
     shippingAddress: {
+        province: { type: String, required: true },
+        district: { type: String, required: true },
+        city: { type: String, required: false },
         address: { type: String, required: true },
-        city: { type: String, required: true },
         phone: { type: String, required: true }
+    },
+    paymentMethod: {
+        type: String,
+        required: true,
+        enum: ['COD', 'eSewa', 'Khalti'],
+        default: 'COD'
+    },
+    taxDetails: {
+        vatAmount: { type: Number, default: 0 },
+        isTaxInvoice: { type: Boolean, default: false },
+        panNumber: { type: String, default: '' }
     },
     status: {
         type: String,

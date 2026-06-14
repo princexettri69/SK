@@ -45,7 +45,7 @@ const Product = require('../models/Product');
 // Create order
 router.post('/', protect, async (req, res) => {
     try {
-        let { items, shippingAddress, totalPrice } = req.body;
+        let { items, shippingAddress, totalPrice, paymentMethod, taxDetails } = req.body;
         if (!items || items.length === 0) {
             return res.status(400).json({ message: 'No order items' });
         }
@@ -58,10 +58,22 @@ router.post('/', protect, async (req, res) => {
             console.log(`🎁 Loyalty Program: Applied 10% discount (-${discountApplied}) to order for user ${req.user.name}`);
         }
         
+        // VAT Calculation (13% on top of total after discount)
+        const vatAmount = totalPrice * 0.13;
+        totalPrice = totalPrice + vatAmount;
+
+        const finalTaxDetails = {
+            vatAmount,
+            isTaxInvoice: taxDetails?.isTaxInvoice || false,
+            panNumber: taxDetails?.panNumber || ''
+        };
+        
         const order = new Order({
             user: req.user._id,
             items,
             shippingAddress,
+            paymentMethod: paymentMethod || 'COD',
+            taxDetails: finalTaxDetails,
             totalPrice,
             discountApplied
         });
@@ -72,9 +84,16 @@ router.post('/', protect, async (req, res) => {
         console.log('\n📦 --- NEW ORDER RECEIVED ---');
         console.log(`ID: ${createdOrder._id}`);
         console.log(`User: ${req.user.name} (${req.user.email})`);
-        console.log(`Total: रू ${createdOrder.totalPrice.toLocaleString()}`);
+        console.log(`Total (Inc. 13% VAT): रू ${createdOrder.totalPrice.toLocaleString()}`);
+        console.log(`Payment Method: ${createdOrder.paymentMethod}`);
         console.log(`Items: ${items.length} units`);
         console.log('-----------------------------\n');
+
+        // MOCK SMS LOGGING
+        console.log('\n📱 --- MOCK SMS GATEWAY ---');
+        console.log(`To: ${shippingAddress.phone}`);
+        console.log(`Message: Dear ${req.user.name}, your order ${createdOrder._id} for रू ${createdOrder.totalPrice.toLocaleString()} has been received. Thank you for choosing S.K Trade!`);
+        console.log('---------------------------\n');
         
         // Update stock and check for low stock notifications
         for (const item of items) {
@@ -109,6 +128,31 @@ router.patch('/:id/status', protect, restrictTo('admin'), async (req, res) => {
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
+});
+
+// Mock eSewa Success Endpoint
+router.get('/esewa/success', async (req, res) => {
+    // In a real app, you would verify the eSewa transaction here
+    console.log('✅ eSewa Mock Payment Success', req.query);
+    res.send(`
+        <div style="font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #0f172a; color: white;">
+            <h2 style="color: #10b981;">Payment Successful!</h2>
+            <p>You will be redirected back to your orders...</p>
+        </div>
+        <script>setTimeout(() => window.location.href="http://localhost:5173/my-orders", 3000)</script>
+    `);
+});
+
+// Mock eSewa Failure Endpoint
+router.get('/esewa/failure', async (req, res) => {
+    console.log('❌ eSewa Mock Payment Failed', req.query);
+    res.send(`
+        <div style="font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #0f172a; color: white;">
+            <h2 style="color: #ef4444;">Payment Failed!</h2>
+            <p>You will be redirected back to your cart...</p>
+        </div>
+        <script>setTimeout(() => window.location.href="http://localhost:5173/cart", 3000)</script>
+    `);
 });
 
 module.exports = router;

@@ -104,12 +104,20 @@ const ProductDetails = () => {
                         <h1 style={{ fontSize: '3.5rem', fontWeight: 900, marginBottom: '1rem', letterSpacing: '-1.5px', color: 'white', lineHeight: '1.1' }}>{product.name}</h1>
                         
                         <div style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'baseline', gap: '1rem' }}>
-                            <span style={{ fontSize: '3rem', fontWeight: 900, color: 'var(--primary-accent)' }}>
-                                रू {selectedVariant ? selectedVariant.price.toLocaleString() : product.price?.toLocaleString()}
-                            </span>
-                            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '1px' }}>
-                                NPR (INC. TAXES) {selectedVariant && selectedVariant.unit ? ` / ${selectedVariant.unit}` : ''}
-                            </span>
+                            {product.isCatalogOnly ? (
+                                <span style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--text-muted)' }}>
+                                    In-Store / Request Quote
+                                </span>
+                            ) : (
+                                <>
+                                    <span style={{ fontSize: '3rem', fontWeight: 900, color: 'var(--primary-accent)' }}>
+                                        रू {selectedVariant ? selectedVariant.price.toLocaleString() : product.price?.toLocaleString()}
+                                    </span>
+                                    <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '1px' }}>
+                                        NPR (INC. TAXES) {selectedVariant && selectedVariant.unit ? ` / ${selectedVariant.unit}` : ''}
+                                    </span>
+                                </>
+                            )}
                         </div>
 
                         <p style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--text-muted)', marginBottom: '3rem' }}>
@@ -117,53 +125,62 @@ const ProductDetails = () => {
                         </p>
 
                         {/* Order Configuration */}
-                        <div className="card glass-dark" style={{ padding: '2rem', borderRadius: '2rem', marginBottom: '3rem', border: '1px solid var(--glass-border)' }}>
-                            <h4 style={{ marginBottom: '1.5rem', fontWeight: 800, fontSize: '0.9rem', color: 'white', textTransform: 'uppercase', letterSpacing: '1px' }}>Configuration</h4>
-                            
-                            {product.variants && product.variants.length > 0 && (
-                                <div style={{ marginBottom: '2rem' }}>
-                                    <h5 style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Select Size</h5>
-                                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                                        {product.variants.map((variant, idx) => (
-                                            <button 
-                                                key={idx}
-                                                onClick={() => setSelectedVariant(variant)}
-                                                style={{
-                                                    padding: '0.75rem 1.5rem',
-                                                    borderRadius: '12px',
-                                                    background: selectedVariant === variant ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255,255,255,0.05)',
-                                                    border: `1px solid ${selectedVariant === variant ? '#3b82f6' : 'var(--glass-border)'}`,
-                                                    color: selectedVariant === variant ? '#3b82f6' : 'white',
-                                                    fontWeight: 700,
-                                                    cursor: 'pointer',
-                                                    transition: 'all 0.2s'
-                                                }}
-                                            >
-                                                {variant.size}
-                                            </button>
-                                        ))}
+                        {!product.isCatalogOnly ? (
+                            <div className="card glass-dark" style={{ padding: '2rem', borderRadius: '2rem', marginBottom: '3rem', border: '1px solid var(--glass-border)' }}>
+                                <h4 style={{ marginBottom: '1.5rem', fontWeight: 800, fontSize: '0.9rem', color: 'white', textTransform: 'uppercase', letterSpacing: '1px' }}>Configuration</h4>
+                                
+                                {product.variants && product.variants.length > 0 && (
+                                    <div style={{ marginBottom: '2rem' }}>
+                                        <h5 style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Select Size</h5>
+                                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                            {product.variants.map((variant, idx) => (
+                                                <button 
+                                                    key={idx}
+                                                    onClick={() => setSelectedVariant(variant)}
+                                                    style={{
+                                                        padding: '0.75rem 1.5rem',
+                                                        borderRadius: '12px',
+                                                        background: selectedVariant === variant ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255,255,255,0.05)',
+                                                        border: `1px solid ${selectedVariant === variant ? '#3b82f6' : 'var(--glass-border)'}`,
+                                                        color: selectedVariant === variant ? '#3b82f6' : 'white',
+                                                        fontWeight: 700,
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.2s'
+                                                    }}
+                                                >
+                                                    {variant.size}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1.5rem', borderRadius: '15px', border: '1px solid var(--glass-border)' }}>
+                                        <button onClick={() => setQuantity(q => Math.max(1, q - 1))} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}><Minus size={20} /></button>
+                                        <span style={{ fontWeight: 900, fontSize: '1.25rem', width: '30px', textAlign: 'center' }}>{quantity}</span>
+                                        <button onClick={() => setQuantity(q => q + 1)} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}><Plus size={20} /></button>
+                                    </div>
+                                    
+                                    <div style={{ flex: 1, display: 'flex', gap: '1rem' }}>
+                                        <button 
+                                            onClick={handleAddToCart}
+                                            className="btn btn-primary" 
+                                            style={{ flex: 1, padding: '1.25rem', borderRadius: '15px', fontWeight: 800, fontSize: '1.1rem', gap: '0.75rem' }}
+                                        >
+                                            <ShoppingCart size={22} /> Add to Cart
+                                        </button>
                                     </div>
                                 </div>
-                            )}
-
-                            <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1.5rem', borderRadius: '15px', border: '1px solid var(--glass-border)' }}>
-                                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}><Minus size={20} /></button>
-                                    <span style={{ fontWeight: 900, fontSize: '1.25rem', width: '30px', textAlign: 'center' }}>{quantity}</span>
-                                    <button onClick={() => setQuantity(q => q + 1)} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}><Plus size={20} /></button>
-                                </div>
-                                
-                                <div style={{ flex: 1, display: 'flex', gap: '1rem' }}>
-                                    <button 
-                                        onClick={handleAddToCart}
-                                        className="btn btn-primary" 
-                                        style={{ flex: 1, padding: '1.25rem', borderRadius: '15px', fontWeight: 800, fontSize: '1.1rem', gap: '0.75rem' }}
-                                    >
-                                        <ShoppingCart size={22} /> Add to Cart
-                                    </button>
-                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="card glass-dark" style={{ padding: '2rem', borderRadius: '2rem', marginBottom: '3rem', border: '1px solid var(--glass-border)', textAlign: 'center' }}>
+                                <h4 style={{ marginBottom: '1rem', fontWeight: 800, fontSize: '1.2rem', color: 'white' }}>In-Store Catalog Item</h4>
+                                <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+                                    This item is available for bulk and custom orders directly through our experience center. Please contact our support team for a detailed quote.
+                                </p>
+                            </div>
+                        )}
 
                         {product.features && product.features.length > 0 && (
                             <div style={{ marginBottom: '3rem' }}>

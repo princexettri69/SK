@@ -41,11 +41,11 @@ const Footer = () => {
             </div>
             <div style={contactItemStyle}>
               <Phone size={20} color="var(--primary-accent)" />
-              <span>+977 9910425484, 9746859847</span>
+              <span>+977 9810425484, 9705451066</span>
             </div>
             <div style={contactItemStyle}>
               <Mail size={20} color="var(--primary-accent)" />
-              <span>info@sktrade.com.np</span>
+              <span>xettriprince150@gmail.com</span>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Wrench, PaintBucket, Home as HomeIcon, ShieldCheck, Star, Award, Zap, Heart } from 'lucide-react';
+import { ArrowRight, Wrench, PaintBucket, Home as HomeIcon, ShieldCheck, Star, Award, Zap, Heart, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { resolveImageUrl } from '../utils/resolveImage';
@@ -7,6 +7,9 @@ import heroImage1 from '../assets/home-hero.jpg';
 import heroImage2 from '../assets/home-gallery-1.jpg';
 import heroImage3 from '../assets/home-gallery-2.avif';
 import heroImage4 from '../assets/home-gallery-3.jpg';
+import brandKent from '../assets/brand-kent.png';
+import brandCg from '../assets/brand-cg.png';
+import brandGlen from '../assets/brand-glen.jpg';
 
 const images = [heroImage1, heroImage2, heroImage3, heroImage4];
 
@@ -158,6 +161,47 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Complete Interior & Hardware Solutions Section */}
+      <section className="section" style={{ backgroundColor: 'var(--background)' }}>
+        <div className="container">
+          <div className="mobile-stack" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+            <div style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', inset: '-20px', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), transparent)', borderRadius: '2rem', zIndex: 0 }}></div>
+              <img src={images[1]} alt="Modern Interior Decor" style={{ width: '100%', borderRadius: '1.5rem', position: 'relative', zIndex: 1, boxShadow: '0 20px 40px rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)' }} />
+            </div>
+            <div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary-accent)', marginBottom: '1rem', padding: '0.5rem 1rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '100px' }}>
+                <PaintBucket size={18} />
+                <span style={{ fontWeight: 800, fontSize: '0.8rem', letterSpacing: '2px' }}>END-TO-END SOLUTIONS</span>
+              </div>
+              <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '1.5rem', lineHeight: 1.1 }}>
+                Fully Furnished <span style={{ color: 'var(--primary-accent)' }}>Interior Decor</span> & Hardware
+              </h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginBottom: '1.5rem', lineHeight: 1.7 }}>
+                Building a new home? We provide comprehensive interior decoration services and supply <strong>every single hardware item</strong> required to make your dream house a reality. From concept to execution, we handle it all.
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2.5rem 0', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'var(--text-main)', fontWeight: 500, fontSize: '1.05rem' }}>
+                  <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '0.5rem', borderRadius: '50%' }}><ShieldCheck size={20} /></div>
+                  Complete Interior Design & Execution
+                </li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'var(--text-main)', fontWeight: 500, fontSize: '1.05rem' }}>
+                  <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '0.5rem', borderRadius: '50%' }}><Wrench size={20} /></div>
+                  Premium Grade Architectural Hardware
+                </li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'var(--text-main)', fontWeight: 500, fontSize: '1.05rem' }}>
+                  <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '0.5rem', borderRadius: '50%' }}><HomeIcon size={20} /></div>
+                  Modular Kitchens & Appliances Setup
+                </li>
+              </ul>
+              <a href="#contact" className="btn btn-primary" style={{ padding: '1rem 2rem', borderRadius: '12px', fontSize: '1.05rem' }}>
+                Start Your Project <ArrowRight size={20} />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Products Section */}
       {!loadingFeatured && featuredProducts.length > 0 && (
         <section className="section" style={{ backgroundColor: 'var(--background)' }}>
@@ -190,6 +234,46 @@ const Home = () => {
           </div>
         </section>
       )}
+
+      {/* Authorized Brands Section */}
+      <section className="section" style={{ backgroundColor: 'var(--background)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary-accent)', marginBottom: '1rem', padding: '0.5rem 1rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '100px' }}>
+              <ShieldCheck size={18} />
+              <span style={{ fontWeight: 800, fontSize: '0.8rem', letterSpacing: '2px' }}>OFFICIAL PARTNERS</span>
+            </div>
+            <h2 style={{ fontSize: 'clamp(1.75rem, 6vw, 3rem)', marginBottom: '1rem' }}>Authorized Premium Dealer</h2>
+            <p style={{ color: 'var(--text-muted)', maxWidth: '650px', margin: '0 auto', fontSize: '1.1rem' }}>
+              We are officially certified and trusted partners for Nepal's leading home appliance and hardware brands, ensuring 100% genuine products and warranty support.
+            </p>
+          </div>
+          
+          <div className="grid grid-3" style={{ gap: '2rem' }}>
+            <BrandCard 
+              name="KENT" 
+              tagline="Water Purifiers" 
+              desc="Certified dealer for authentic KENT RO and UV water purification systems, bringing the purest drinking water to your family."
+              color="#0ea5e9"
+              imgSrc={brandKent}
+            />
+            <BrandCard 
+              name="CG" 
+              tagline="Home Appliances" 
+              desc="Authorized retailer for Chaudhary Group's premium line of electronics, bringing cutting-edge technology to your living space."
+              color="#ef4444"
+              imgSrc={brandCg}
+            />
+            <BrandCard 
+              name="Glen" 
+              tagline="Kitchen Chimneys" 
+              desc="Exclusive partner for Glen's advanced, silent, and high-suction kitchen chimneys and premium built-in hobs."
+              color="#f59e0b"
+              imgSrc={brandGlen}
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Why Choose Us Section */}
       <section className="section" style={{ background: 'rgba(30, 41, 59, 0.4)' }}>
@@ -235,8 +319,26 @@ const Home = () => {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 <ContactInfo icon={<HomeIcon size={24} />} title="Experience Center" detail="Dharan Line, Itahari - 6, Nepal" />
-                <ContactInfo icon={<PaintBucket size={24} />} title="Customer Support" detail="+977 9810425484, 8746859847" />
-                <ContactInfo icon={<ShieldCheck size={24} />} title="Email Inquiry" detail="info@sktrade.com.np" />
+                <ContactInfo icon={<PaintBucket size={24} />} title="Customer Support" detail="+977 9810425484, 9705451066" />
+                <ContactInfo icon={<ShieldCheck size={24} />} title="Email Inquiry" detail="xettriprince150@gmail.com" />
+              </div>
+
+              <div style={{ marginTop: '2.5rem' }}>
+                <div style={{ width: '100%', height: '220px', borderRadius: '1rem', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
+                  <iframe 
+                    title="S.K Trade And Suppliers Location"
+                    src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=Itahari,%20Nepal+(S.K%20Trade%20And%20Suppliers)&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed" 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }} 
+                    allowFullScreen="" 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+                <a href="https://maps.app.goo.gl/bhAEpYuq3QhA6J2PA" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary-accent)', fontWeight: 700, marginTop: '1rem', textDecoration: 'none', transition: 'color 0.3s' }} onMouseOver={(e) => e.currentTarget.style.color = 'white'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--primary-accent)'}>
+                  <MapPin size={18} /> Open Directions in Google Maps <ArrowRight size={16} />
+                </a>
               </div>
             </div>
 
@@ -267,6 +369,20 @@ const ServiceCard = ({ icon, title, desc }) => (
     </div>
     <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem' }}>{title}</h3>
     <p style={{ color: 'var(--text-muted)', lineHeight: '1.8', fontSize: '0.95rem' }}>{desc}</p>
+  </motion.div>
+);
+
+const BrandCard = ({ name, tagline, desc, color, imgSrc }) => (
+  <motion.div whileHover={{ y: -5 }} className="card glass-light" style={{ padding: '2.5rem 2rem', borderRadius: '1.5rem', borderTop: `4px solid ${color}`, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div style={{ height: '70px', width: '100%', marginBottom: '1.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'white', padding: '0.75rem', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
+      {imgSrc ? (
+        <img src={imgSrc} alt={`${name} Logo`} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+      ) : (
+        <h3 style={{ fontSize: '2rem', fontWeight: 900, color: '#0f172a', margin: 0 }}>{name}</h3>
+      )}
+    </div>
+    <span style={{ color: color, fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem', display: 'block', background: 'rgba(255,255,255,0.05)', padding: '0.25rem 0.75rem', borderRadius: '100px' }}>{tagline}</span>
+    <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>{desc}</p>
   </motion.div>
 );
 

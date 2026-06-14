@@ -43,6 +43,10 @@ const productSchema = new mongoose.Schema({
         required: [true, 'A product must have stock'],
         default: 20
     },
+    isCatalogOnly: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

@@ -14,10 +14,20 @@ const Checkout = () => {
     const [loading, setLoading] = useState(false);
 
     const [shippingAddress, setShippingAddress] = useState({
-        address: '',
+        province: '',
+        district: '',
         city: '',
+        address: '',
         phone: ''
     });
+    
+    const [paymentMethod, setPaymentMethod] = useState('COD');
+    const [taxDetails, setTaxDetails] = useState({
+        isTaxInvoice: false,
+        panNumber: ''
+    });
+
+    const provinces = ["Koshi", "Madhesh", "Bagmati", "Gandaki", "Lumbini", "Karnali", "Sudurpashchim"];
 
     const handlePlaceOrder = async (e) => {
         e.preventDefault();
@@ -37,6 +47,8 @@ const Checkout = () => {
                     variant: item.selectedVariant ? { size: item.selectedVariant.size, unit: item.selectedVariant.unit } : undefined
                 })),
                 shippingAddress,
+                paymentMethod,
+                taxDetails,
                 totalPrice: getCartTotal()
             };
 
@@ -44,9 +56,14 @@ const Checkout = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            toast.success('Order placed successfully!');
             clearCart();
-            navigate('/my-orders');
+            
+            if (paymentMethod === 'eSewa' || paymentMethod === 'Khalti') {
+                window.location.href = `${import.meta.env.VITE_API_URL}/api/orders/esewa/success`;
+            } else {
+                toast.success('Order placed successfully!');
+                navigate('/my-orders');
+            }
         } catch (err) {
             console.error(err);
             toast.error(err.response?.data?.message || 'Failed to place order');
@@ -91,12 +108,32 @@ const Checkout = () => {
                                     required 
                                 />
                                 <div className="grid grid-2" style={{ gap: '1.5rem' }}>
+                                    <div style={{ width: '100%' }}>
+                                        <label style={{ display: 'block', marginBottom: '0.75rem', fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)' }}>Province</label>
+                                        <select 
+                                            value={shippingAddress.province} 
+                                            onChange={(e) => setShippingAddress({...shippingAddress, province: e.target.value})}
+                                            required
+                                            style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--glass-border)', color: 'white', outline: 'none' }}
+                                        >
+                                            <option value="" disabled>Select Province</option>
+                                            {provinces.map(p => <option key={p} value={p}>{p}</option>)}
+                                        </select>
+                                    </div>
                                     <CheckoutInput 
-                                        label="City / Region" 
+                                        label="District" 
+                                        value={shippingAddress.district} 
+                                        onChange={(e) => setShippingAddress({...shippingAddress, district: e.target.value})} 
+                                        placeholder="e.g. Sunsari" 
+                                        required 
+                                    />
+                                </div>
+                                <div className="grid grid-2" style={{ gap: '1.5rem' }}>
+                                    <CheckoutInput 
+                                        label="City / Municipality (Optional)" 
                                         value={shippingAddress.city} 
                                         onChange={(e) => setShippingAddress({...shippingAddress, city: e.target.value})} 
-                                        placeholder="Itahari, Sunsari" 
-                                        required 
+                                        placeholder="e.g. Itahari" 
                                     />
                                     <CheckoutInput 
                                         label="Contact Number" 
@@ -107,12 +144,63 @@ const Checkout = () => {
                                     />
                                 </div>
 
-                                <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '15px', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+                                {/* Billing & Tax Details */}
+                                <div style={{ marginTop: '1rem', padding: '1.5rem', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '15px', border: '1px solid var(--glass-border)' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                                        <ShieldCheck size={20} color="var(--primary-accent)" />
+                                        <h4 style={{ fontWeight: 700 }}>Tax / VAT Invoice</h4>
+                                    </div>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', marginBottom: '1rem' }}>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={taxDetails.isTaxInvoice} 
+                                            onChange={(e) => setTaxDetails({...taxDetails, isTaxInvoice: e.target.checked})}
+                                        />
+                                        <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>I need a PAN/VAT Bill</span>
+                                    </label>
+                                    {taxDetails.isTaxInvoice && (
+                                        <CheckoutInput 
+                                            label="PAN / VAT Number" 
+                                            value={taxDetails.panNumber} 
+                                            onChange={(e) => setTaxDetails({...taxDetails, panNumber: e.target.value})} 
+                                            placeholder="Enter 9 digit PAN" 
+                                            required 
+                                        />
+                                    )}
+                                </div>
+
+                                {/* Payment Method Selection */}
+                                <div style={{ marginTop: '1rem', padding: '1.5rem', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '15px', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                                         <CreditCard size={20} color="var(--primary-accent)" />
                                         <h4 style={{ fontWeight: 700 }}>Payment Method</h4>
                                     </div>
-                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Cash on Delivery (Pay when you receive your premium products).</p>
+                                    
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer', padding: '1rem', background: paymentMethod === 'COD' ? 'rgba(59, 130, 246, 0.1)' : 'transparent', border: '1px solid', borderColor: paymentMethod === 'COD' ? 'var(--primary-accent)' : 'var(--glass-border)', borderRadius: '10px', transition: 'all 0.3s' }}>
+                                            <input type="radio" name="paymentMethod" value="COD" checked={paymentMethod === 'COD'} onChange={(e) => setPaymentMethod(e.target.value)} />
+                                            <div>
+                                                <div style={{ fontWeight: 700 }}>Cash on Delivery</div>
+                                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Pay when you receive your items</div>
+                                            </div>
+                                        </label>
+                                        
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer', padding: '1rem', background: paymentMethod === 'eSewa' ? 'rgba(16, 185, 129, 0.1)' : 'transparent', border: '1px solid', borderColor: paymentMethod === 'eSewa' ? '#10b981' : 'var(--glass-border)', borderRadius: '10px', transition: 'all 0.3s' }}>
+                                            <input type="radio" name="paymentMethod" value="eSewa" checked={paymentMethod === 'eSewa'} onChange={(e) => setPaymentMethod(e.target.value)} />
+                                            <div>
+                                                <div style={{ fontWeight: 700, color: '#10b981' }}>eSewa Digital Wallet</div>
+                                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Pay securely via eSewa (Mock)</div>
+                                            </div>
+                                        </label>
+
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer', padding: '1rem', background: paymentMethod === 'Khalti' ? 'rgba(92, 45, 145, 0.1)' : 'transparent', border: '1px solid', borderColor: paymentMethod === 'Khalti' ? '#5c2d91' : 'var(--glass-border)', borderRadius: '10px', transition: 'all 0.3s' }}>
+                                            <input type="radio" name="paymentMethod" value="Khalti" checked={paymentMethod === 'Khalti'} onChange={(e) => setPaymentMethod(e.target.value)} />
+                                            <div>
+                                                <div style={{ fontWeight: 700, color: '#a259ff' }}>Khalti Digital Wallet</div>
+                                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Pay securely via Khalti (Mock)</div>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
 
                                 <button 
@@ -150,9 +238,18 @@ const Checkout = () => {
                             
                             <div style={{ height: '1px', background: 'var(--glass-border)', marginBottom: '1.5rem' }}></div>
                             
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+                                <span>Subtotal</span>
+                                <span>रू {getCartTotal().toLocaleString()}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+                                <span>VAT (13%)</span>
+                                <span>रू {(getCartTotal() * 0.13).toLocaleString()}</span>
+                            </div>
+                            
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: 900, flexWrap: 'wrap', gap: '0.5rem' }}>
                                 <span>Total NPR</span>
-                                <span style={{ color: 'var(--primary-accent)' }}>{getCartTotal().toLocaleString()}</span>
+                                <span style={{ color: 'var(--primary-accent)' }}>{((getCartTotal()) + (getCartTotal() * 0.13)).toLocaleString()}</span>
                             </div>
 
                             <div style={{ marginTop: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#10b981', fontSize: '0.75rem', fontWeight: 700 }}>

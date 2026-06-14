@@ -204,18 +204,20 @@ const Products = () => {
                       style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                       onError={(e) => { e.target.src = 'https://via.placeholder.com/400'; }}
                     />
-                    <button
-                      onClick={(e) => handleQuickAdd(e, product)}
-                      style={{
-                        position: 'absolute', top: '10px', right: '10px', background: 'var(--primary-accent)',
-                        border: 'none', borderRadius: '50%', width: '38px', height: '38px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: 'white', cursor: 'pointer', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)', zIndex: 5
-                      }}
-                      title="Add to cart"
-                    >
-                      <ShoppingCart size={18} />
-                    </button>
+                    {!product.isCatalogOnly && (
+                      <button
+                        onClick={(e) => handleQuickAdd(e, product)}
+                        style={{
+                          position: 'absolute', top: '10px', right: '10px', background: 'var(--primary-accent)',
+                          border: 'none', borderRadius: '50%', width: '38px', height: '38px',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          color: 'white', cursor: 'pointer', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)', zIndex: 5
+                        }}
+                        title="Add to cart"
+                      >
+                        <ShoppingCart size={18} />
+                      </button>
+                    )}
                   </div>
 
                   <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -242,10 +244,18 @@ const Products = () => {
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span style={{ fontSize: '1.15rem', fontWeight: 900, color: 'var(--primary-accent)' }}>
-                          रू {product.price?.toLocaleString() || 'N/A'}
-                        </span>
-                        <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>NPR (INC. TAX)</span>
+                        {product.isCatalogOnly ? (
+                          <span style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-muted)' }}>
+                            In-Store / Quote
+                          </span>
+                        ) : (
+                          <>
+                            <span style={{ fontSize: '1.15rem', fontWeight: 900, color: 'var(--primary-accent)' }}>
+                              रू {product.price?.toLocaleString() || 'N/A'}
+                            </span>
+                            <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>NPR (INC. TAX)</span>
+                          </>
+                        )}
                       </div>
                       <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.5rem', borderRadius: '50%' }}>
                         <ArrowRight size={16} color="var(--primary-accent)" />
