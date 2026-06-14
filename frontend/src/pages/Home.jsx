@@ -7,9 +7,6 @@ import heroImage1 from '../assets/home-hero.jpg';
 import heroImage2 from '../assets/home-gallery-1.jpg';
 import heroImage3 from '../assets/home-gallery-2.avif';
 import heroImage4 from '../assets/home-gallery-3.jpg';
-import brandKent from '../assets/brand-kent.png';
-import brandCg from '../assets/brand-cg.png';
-import brandGlen from '../assets/brand-glen.jpg';
 
 const images = [heroImage1, heroImage2, heroImage3, heroImage4];
 
@@ -235,75 +232,6 @@ const Home = () => {
         </section>
       )}
 
-      {/* Authorized Brands Section */}
-      <section className="section" style={{ backgroundColor: 'var(--background)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary-accent)', marginBottom: '1rem', padding: '0.5rem 1rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '100px' }}>
-              <ShieldCheck size={18} />
-              <span style={{ fontWeight: 800, fontSize: '0.8rem', letterSpacing: '2px' }}>OFFICIAL PARTNERS</span>
-            </div>
-            <h2 style={{ fontSize: 'clamp(1.75rem, 6vw, 3rem)', marginBottom: '1rem' }}>Authorized Premium Dealer</h2>
-            <p style={{ color: 'var(--text-muted)', maxWidth: '650px', margin: '0 auto', fontSize: '1.1rem' }}>
-              We are officially certified and trusted partners for Nepal's leading home appliance and hardware brands, ensuring 100% genuine products and warranty support.
-            </p>
-          </div>
-
-          <div className="grid grid-3" style={{ gap: '2rem' }}>
-            <BrandCard
-              name="KENT"
-              tagline="Water Purifiers"
-              desc="Certified dealer for authentic KENT RO and UV water purification systems, bringing the purest drinking water to your family."
-              color="#0ea5e9"
-              imgSrc={brandKent}
-            />
-            <BrandCard
-              name="CG"
-              tagline="Home Appliances"
-              desc="Authorized retailer for Chaudhary Group's premium line of electronics, bringing cutting-edge technology to your living space."
-              color="#ef4444"
-              imgSrc={brandCg}
-            />
-            <BrandCard
-              name="Glen"
-              tagline="Kitchen Chimneys"
-              desc="Exclusive partner for Glen's advanced, silent, and high-suction kitchen chimneys and premium built-in hobs."
-              color="#f59e0b"
-              imgSrc={brandGlen}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us Section */}
-      <section className="section" style={{ background: 'rgba(30, 41, 59, 0.4)' }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <h2 style={{ fontSize: 'clamp(1.75rem, 6vw, 3.5rem)', marginBottom: '1.5rem' }}>Excellence in Service</h2>
-            <p style={{ color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto', fontSize: 'clamp(0.95rem, 4vw, 1.1rem)' }}>
-              We combine industry-leading products with expert consultation to provide a seamless home transformation experience.
-            </p>
-          </div>
-
-          <div className="grid grid-3">
-            <ServiceCard
-              icon={<Award size={32} />}
-              title="Premium Quality"
-              desc="We only deal with authorized world-class brands like KENT, Elica, and Shikhar Ply to ensure longevity."
-            />
-            <ServiceCard
-              icon={<Zap size={32} />}
-              title="Expert Installation"
-              desc="Our certified technicians ensure that every appliance and hardware piece is installed with precision."
-            />
-            <ServiceCard
-              icon={<Heart size={32} />}
-              title="After-Sales Care"
-              desc="Authorized service center status means we provide genuine spare parts and rapid maintenance support."
-            />
-          </div>
-        </div>
-      </section>
 
       {/* Contact Section */}
       <section id="contact" className="section" style={{ backgroundColor: 'var(--background)' }}>
@@ -362,29 +290,6 @@ const Home = () => {
   );
 };
 
-const ServiceCard = ({ icon, title, desc }) => (
-  <motion.div whileHover={{ y: -8 }} className="card glass" style={{ padding: '2.5rem', borderRadius: '2rem', textAlign: 'center' }}>
-    <div style={{ display: 'inline-flex', padding: '1.25rem', borderRadius: '1.25rem', background: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary-accent)', marginBottom: '1.5rem' }}>
-      {icon}
-    </div>
-    <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem' }}>{title}</h3>
-    <p style={{ color: 'var(--text-muted)', lineHeight: '1.8', fontSize: '0.95rem' }}>{desc}</p>
-  </motion.div>
-);
-
-const BrandCard = ({ name, tagline, desc, color, imgSrc }) => (
-  <motion.div whileHover={{ y: -5 }} className="card glass-light" style={{ padding: '2.5rem 2rem', borderRadius: '1.5rem', borderTop: `4px solid ${color}`, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-    <div style={{ height: '70px', width: '100%', marginBottom: '1.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'white', padding: '0.75rem', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
-      {imgSrc ? (
-        <img src={imgSrc} alt={`${name} Logo`} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
-      ) : (
-        <h3 style={{ fontSize: '2rem', fontWeight: 900, color: '#0f172a', margin: 0 }}>{name}</h3>
-      )}
-    </div>
-    <span style={{ color: color, fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem', display: 'block', background: 'rgba(255,255,255,0.05)', padding: '0.25rem 0.75rem', borderRadius: '100px' }}>{tagline}</span>
-    <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>{desc}</p>
-  </motion.div>
-);
 
 const ContactInfo = ({ icon, title, detail }) => (
   <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
