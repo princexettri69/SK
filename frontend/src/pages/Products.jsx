@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Filter, AlertCircle, Package, ShoppingCart, ArrowRight, ChevronDown } from 'lucide-react';
+import { Search, Filter, AlertCircle, Package, ShoppingCart, ArrowRight, ChevronDown, LayoutGrid, List } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../components/CartContext';
 import { resolveImageUrl } from '../utils/resolveImage';
@@ -13,6 +13,8 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [sortOption, setSortOption] = useState('default');
+  const [viewMode, setViewMode] = useState('grid');
 
   const { addToCart } = useCart();
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,7 +37,7 @@ const Products = () => {
 
   useEffect(() => {
     filterProducts();
-  }, [searchTerm, selectedCategory, products]);
+  }, [searchTerm, selectedCategory, products, sortOption]);
 
   const fetchInitialData = async () => {
     setLoading(true);
@@ -72,7 +74,15 @@ const Products = () => {
         p.description.toLowerCase().includes(lowerTerm)
       );
     }
-    setFilteredProducts(result);
+    if (sortOption === 'priceAsc') {
+      result.sort((a, b) => (a.price || 0) - (b.price || 0));
+    } else if (sortOption === 'priceDesc') {
+      result.sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else if (sortOption === 'nameAsc') {
+      result.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    
+    setFilteredProducts([...result]);
   };
 
   const handleQuickAdd = (e, product) => {
@@ -177,28 +187,85 @@ const Products = () => {
           </div>
         </div>
 
-        {/* Results Count */}
-        <div style={{ marginBottom: '1.5rem', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 600, textAlign: window.innerWidth <= 640 ? 'center' : 'left' }}>
-          Showing <span style={{ color: 'var(--primary-accent)' }}>{filteredProducts.length}</span> product{filteredProducts.length !== 1 ? 's' : ''}
-          {selectedCategory !== 'All' && <span> in <strong style={{ color: 'white' }}>{selectedCategory}</strong></span>}
+        {/* Toolbar: Results Count, Sort, View Toggle */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 600 }}>
+            Showing <span style={{ color: 'var(--primary-accent)' }}>{filteredProducts.length}</span> product{filteredProducts.length !== 1 ? 's' : ''}
+            {selectedCategory !== 'All' && <span> in <strong style={{ color: 'white' }}>{selectedCategory}</strong></span>}
+          </div>
+
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            {/* Sort Dropdown */}
+            <select 
+              value={sortOption} 
+              onChange={(e) => setSortOption(e.target.value)}
+              style={{
+                padding: '0.5rem 1rem', borderRadius: '8px', background: 'rgba(30, 41, 59, 0.5)', 
+                color: 'var(--text-main)', border: '1px solid var(--glass-border)', outline: 'none',
+                cursor: 'pointer', fontSize: '0.9rem'
+              }}
+            >
+              <option value="default">Sort by: Default</option>
+              <option value="priceAsc">Price: Low to High</option>
+              <option value="priceDesc">Price: High to Low</option>
+              <option value="nameAsc">Name: A to Z</option>
+            </select>
+
+            {/* View Toggle */}
+            <div style={{ display: 'flex', background: 'rgba(30, 41, 59, 0.5)', borderRadius: '8px', border: '1px solid var(--glass-border)', overflow: 'hidden' }}>
+              <button 
+                onClick={() => setViewMode('grid')}
+                style={{ 
+                  padding: '0.5rem', background: viewMode === 'grid' ? 'var(--primary-accent)' : 'transparent', 
+                  border: 'none', color: viewMode === 'grid' ? 'white' : 'var(--text-muted)', cursor: 'pointer',
+                  transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}
+                title="Grid View"
+              >
+                <LayoutGrid size={18} />
+              </button>
+              <button 
+                onClick={() => setViewMode('list')}
+                style={{ 
+                  padding: '0.5rem', background: viewMode === 'list' ? 'var(--primary-accent)' : 'transparent', 
+                  border: 'none', color: viewMode === 'list' ? 'white' : 'var(--text-muted)', cursor: 'pointer',
+                  transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}
+                title="List View"
+              >
+                <List size={18} />
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-4" style={{ gap: '1.25rem' }}>
+        {/* Products Container */}
+        <motion.div layout className={viewMode === 'grid' ? "grid grid-4" : ""} style={{ gap: '1.25rem', display: viewMode === 'list' ? 'flex' : 'grid', flexDirection: 'column' }}>
+          <AnimatePresence>
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <motion.div
                 key={product._id}
-                whileHover={{ y: -8, scale: 1.02 }}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                whileHover={{ y: -4, scale: 1.01 }}
                 className="card glass card-hover"
                 style={{
-                  height: '100%', overflow: 'hidden', borderRadius: '1.25rem',
+                  height: viewMode === 'grid' ? '100%' : 'auto', overflow: 'hidden', borderRadius: '1.25rem',
                   border: '1px solid var(--glass-border)', background: 'rgba(30, 41, 59, 0.4)',
-                  display: 'flex', flexDirection: 'column', position: 'relative'
+                  display: 'flex', flexDirection: viewMode === 'grid' ? 'column' : 'row', position: 'relative'
                 }}
               >
-                <Link to={`/products/${product._id}`} style={{ textDecoration: 'none', color: 'inherit', height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ height: '180px', backgroundColor: 'white', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.25rem' }}>
+                <Link to={`/products/${product._id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: viewMode === 'grid' ? 'column' : 'row', width: '100%', alignItems: 'stretch' }}>
+                  <div style={{ 
+                    height: viewMode === 'grid' ? '180px' : 'auto',
+                    minHeight: viewMode === 'list' ? '150px' : 'auto',
+                    width: viewMode === 'list' ? '200px' : 'auto',
+                    minWidth: viewMode === 'list' ? '200px' : 'auto',
+                    backgroundColor: 'white', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.25rem' 
+                  }}>
                     <img
                       src={resolveImageUrl(product.imageUrl)} alt={product.name}
                       style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
@@ -220,7 +287,7 @@ const Products = () => {
                     )}
                   </div>
 
-                  <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     <div style={{ marginBottom: '0.6rem' }}>
                       <span style={{
                         backgroundColor: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary-accent)',
@@ -229,20 +296,20 @@ const Products = () => {
                       }}>
                         {product.category}
                       </span>
-                      <h3 style={{ fontSize: '1rem', color: 'white', margin: '0.6rem 0 0 0', lineHeight: '1.4', fontWeight: 700 }}>
+                      <h3 style={{ fontSize: '1.1rem', color: 'white', margin: '0.6rem 0 0 0', lineHeight: '1.4', fontWeight: 700 }}>
                         {product.name}
                       </h3>
                     </div>
 
                     <p style={{
-                      color: 'var(--text-muted)', fontSize: '0.82rem', marginBottom: '1rem',
+                      color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem',
                       display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
                       overflow: 'hidden', lineHeight: '1.6', flex: 1
                     }}>
                       {product.description}
                     </p>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         {product.isCatalogOnly ? (
                           <span style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-muted)' }}>
@@ -266,13 +333,14 @@ const Products = () => {
               </motion.div>
             ))
           ) : (
-            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)' }}>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)' }}>
               <Package size={48} style={{ marginBottom: '1rem', opacity: 0.3 }} />
               <h3 style={{ marginBottom: '0.5rem' }}>No products found</h3>
               <p style={{ fontSize: '0.9rem' }}>Try adjusting your search or filters.</p>
-            </div>
+            </motion.div>
           )}
-        </div>
+          </AnimatePresence>
+        </motion.div>
       </div>
     </div>
   );

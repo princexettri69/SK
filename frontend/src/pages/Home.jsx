@@ -77,7 +77,7 @@ const Home = () => {
                   marginBottom: '1rem',
                   display: 'block'
                 }}>
-                  ESTABLISHED 2026
+                  ESTABLISHED 2016 AD
                 </span>
               </motion.div>
               <motion.h1
@@ -248,25 +248,25 @@ const Home = () => {
               We are officially certified and trusted partners for Nepal's leading home appliance and hardware brands, ensuring 100% genuine products and warranty support.
             </p>
           </div>
-          
+
           <div className="grid grid-3" style={{ gap: '2rem' }}>
-            <BrandCard 
-              name="KENT" 
-              tagline="Water Purifiers" 
+            <BrandCard
+              name="KENT"
+              tagline="Water Purifiers"
               desc="Certified dealer for authentic KENT RO and UV water purification systems, bringing the purest drinking water to your family."
               color="#0ea5e9"
               imgSrc={brandKent}
             />
-            <BrandCard 
-              name="CG" 
-              tagline="Home Appliances" 
+            <BrandCard
+              name="CG"
+              tagline="Home Appliances"
               desc="Authorized retailer for Chaudhary Group's premium line of electronics, bringing cutting-edge technology to your living space."
               color="#ef4444"
               imgSrc={brandCg}
             />
-            <BrandCard 
-              name="Glen" 
-              tagline="Kitchen Chimneys" 
+            <BrandCard
+              name="Glen"
+              tagline="Kitchen Chimneys"
               desc="Exclusive partner for Glen's advanced, silent, and high-suction kitchen chimneys and premium built-in hobs."
               color="#f59e0b"
               imgSrc={brandGlen}
@@ -325,14 +325,14 @@ const Home = () => {
 
               <div style={{ marginTop: '2.5rem' }}>
                 <div style={{ width: '100%', height: '220px', borderRadius: '1rem', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
-                  <iframe 
+                  <iframe
                     title="S.K Trade And Suppliers Location"
-                    src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=Itahari,%20Nepal+(S.K%20Trade%20And%20Suppliers)&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed" 
-                    width="100%" 
-                    height="100%" 
-                    style={{ border: 0 }} 
-                    allowFullScreen="" 
-                    loading="lazy" 
+                    src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=Itahari,%20Nepal+(S.K%20Trade%20And%20Suppliers)&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                   ></iframe>
                 </div>

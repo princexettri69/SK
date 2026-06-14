@@ -56,6 +56,7 @@ const Navbar = () => {
       {/* Desktop Menu */}
       <div style={{ display: 'flex', gap: '1.75rem', alignItems: 'center' }} className="nav-links desktop-only">
         <NavLink to="/" current={location.pathname === '/'}>Home</NavLink>
+        <NavLink to="/about" current={location.pathname === '/about'}>About</NavLink>
         <NavLink to="/products" current={location.pathname === '/products'}>Products</NavLink>
         {user?.role === 'admin' && <NavLink to="/admin" current={location.pathname === '/admin'}>Admin</NavLink>}
         
@@ -149,6 +150,7 @@ const Navbar = () => {
               </button>
 
               <Link to="/" style={mobileLinkStyle(location.pathname === '/')} onClick={closeMenu}>Home</Link>
+              <Link to="/about" style={mobileLinkStyle(location.pathname === '/about')} onClick={closeMenu}>About Us</Link>
               <Link to="/products" style={mobileLinkStyle(location.pathname === '/products')} onClick={closeMenu}>Products Catalog</Link>
               {user && <Link to="/my-orders" style={mobileLinkStyle(location.pathname === '/my-orders')} onClick={closeMenu}>My Orders</Link>}
               {user?.role === 'admin' && <Link to="/admin" style={mobileLinkStyle(location.pathname === '/admin')} onClick={closeMenu}>Admin Control Panel</Link>}

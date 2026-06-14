@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Award, CheckCircle, Users, Box } from 'lucide-react';
+import { Award, CheckCircle, Users, Box, ShieldCheck } from 'lucide-react';
 
 // Brand Logos
 // Album Images (Sitework)
@@ -8,19 +8,15 @@ import work1 from '../assets/home-hero.jpg';
 import work2 from '../assets/home-gallery-1.jpg';
 import work3 from '../assets/home-gallery-2.avif';
 import work4 from '../assets/home-gallery-3.jpg';
+import brandKent from '../assets/brand-kent.png';
+import brandCg from '../assets/brand-cg.png';
+import brandGlen from '../assets/brand-glen.jpg';
 
 const About = () => {
     React.useEffect(() => {
         document.title = "About Us | S.K Trade And Suppliers";
     }, []);
 
-    const brands = [
-        { name: 'KENT RO', logo: '/images/brands/brand-kent.png' },
-        { name: 'ELICA', logo: '/images/brands/brand-elica.png' },
-        { name: 'Shikhar Ply', logo: '/images/brands/brand-shikhar.jpg' },
-        { name: 'GLEN India', logo: '/images/brands/brand-glen.jpg' },
-        { name: 'CG Group', logo: '/images/brands/brand-cg.png' },
-    ];
 
     const album = [work1, work2, work3, work4];
 
@@ -49,7 +45,7 @@ const About = () => {
                         <div>
                             <h2 style={{ fontSize: 'clamp(1.75rem, 6vw, 2.5rem)', marginBottom: '1.5rem' }}>Decades of Excellence in Quality & Trust</h2>
                             <p style={{ marginBottom: '1.5rem', color: 'var(--text-muted)', lineHeight: '1.8' }}>
-                                S.K Trade And Suppliers has been the cornerstone of hardware and interior solutions for years. We pride ourselves on representing the world's most trusted brands, ensuring that every home in our region has access to durable, high-tech, and aesthetic solutions.
+                                Established in 2073 BS, S.K Trade And Suppliers has been the cornerstone of hardware and interior solutions for years. We pride ourselves on representing the world's most trusted brands, ensuring that every home in our region has access to durable, high-tech, and aesthetic solutions.
                             </p>
                             <div className="grid grid-2" style={{ gap: '1rem', marginBottom: '2rem' }}>
                                 <div style={statStyle}>
@@ -75,33 +71,42 @@ const About = () => {
                 </div>
             </section>
 
-            {/* Brands Collaboration Section */}
-            <section className="section" style={{ backgroundColor: '#0f172a' }}>
+            {/* Authorized Brands Section */}
+            <section className="section" style={{ backgroundColor: 'var(--background)' }}>
                 <div className="container">
-                    <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                        <h2 style={{ fontSize: 'clamp(1.75rem, 6vw, 2.5rem)', marginBottom: '1rem' }}>Our Brand Collaborations</h2>
-                        <p style={{ color: 'var(--text-muted)' }}>We represent the best in the industry to bring you quality you can trust.</p>
+                    <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary-accent)', marginBottom: '1rem', padding: '0.5rem 1rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '100px' }}>
+                            <ShieldCheck size={18} />
+                            <span style={{ fontWeight: 800, fontSize: '0.8rem', letterSpacing: '2px' }}>OFFICIAL PARTNERS</span>
+                        </div>
+                        <h2 style={{ fontSize: 'clamp(1.75rem, 6vw, 3rem)', marginBottom: '1rem' }}>Authorized Premium Dealer</h2>
+                        <p style={{ color: 'var(--text-muted)', maxWidth: '650px', margin: '0 auto', fontSize: '1.1rem' }}>
+                            We are officially certified and trusted partners for Nepal's leading home appliance and hardware brands, ensuring 100% genuine products and warranty support.
+                        </p>
                     </div>
-                    <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-                        {brands.map((brand, i) => (
-                            <motion.div 
-                                key={i}
-                                whileHover={{ scale: 1.05 }}
-                                style={{ 
-                                    backgroundColor: 'white', 
-                                    padding: '1rem', 
-                                    borderRadius: '1rem', 
-                                    width: 'clamp(140px, 20vw, 180px)', 
-                                    height: 'clamp(80px, 12vw, 100px)', 
-                                    display: 'flex', 
-                                    alignItems: 'center', 
-                                    justifyContent: 'center',
-                                    boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
-                                }}
-                            >
-                                <img src={brand.logo} alt={brand.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                            </motion.div>
-                        ))}
+                    
+                    <div className="grid grid-3" style={{ gap: '2rem' }}>
+                        <BrandCard 
+                            name="KENT" 
+                            tagline="Water Purifiers" 
+                            desc="Certified dealer for authentic KENT RO and UV water purification systems, bringing the purest drinking water to your family."
+                            color="#0ea5e9"
+                            imgSrc={brandKent}
+                        />
+                        <BrandCard 
+                            name="CG" 
+                            tagline="Home Appliances" 
+                            desc="Authorized retailer for Chaudhary Group's premium line of electronics, bringing cutting-edge technology to your living space."
+                            color="#ef4444"
+                            imgSrc={brandCg}
+                        />
+                        <BrandCard 
+                            name="Glen" 
+                            tagline="Kitchen Chimneys" 
+                            desc="Exclusive partner for Glen's advanced, silent, and high-suction kitchen chimneys and premium built-in hobs."
+                            color="#f59e0b"
+                            imgSrc={brandGlen}
+                        />
                     </div>
                 </div>
             </section>
@@ -155,5 +160,19 @@ const statStyle = {
     borderRadius: '12px',
     border: '1px solid rgba(255,255,255,0.05)'
 };
+
+const BrandCard = ({ name, tagline, desc, color, imgSrc }) => (
+  <motion.div whileHover={{ y: -5 }} className="card glass-light" style={{ padding: '2.5rem 2rem', borderRadius: '1.5rem', borderTop: `4px solid ${color}`, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div style={{ height: '70px', width: '100%', marginBottom: '1.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'white', padding: '0.75rem', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
+      {imgSrc ? (
+        <img src={imgSrc} alt={`${name} Logo`} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+      ) : (
+        <h3 style={{ fontSize: '2rem', fontWeight: 900, color: '#0f172a', margin: 0 }}>{name}</h3>
+      )}
+    </div>
+    <span style={{ color: color, fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1.5rem', display: 'block', background: 'rgba(255,255,255,0.05)', padding: '0.25rem 0.75rem', borderRadius: '100px' }}>{tagline}</span>
+    <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>{desc}</p>
+  </motion.div>
+);
 
 export default About;
