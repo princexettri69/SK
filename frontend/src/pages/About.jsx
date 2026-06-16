@@ -11,6 +11,7 @@ import work4 from '../assets/home-gallery-3.jpg';
 import brandKent from '../assets/brand-kent.png';
 import brandCg from '../assets/brand-cg.png';
 import brandGlen from '../assets/brand-glen.jpg';
+import brandShikhar from '../assets/brand-shikhar.jpg';
 
 const About = () => {
     React.useEffect(() => {
@@ -96,14 +97,14 @@ const About = () => {
                         <BrandCard 
                             name="CG & More" 
                             tagline="Home Appliances" 
-                            desc="Authorized retailer for CG home appliances. We also offer premium kitchen chimneys and stoves from top brands like Kent, Elica, and Glen."
+                            desc="Authorized retailer for CG home appliances. We also offer premium kitchen chimneys and stoves from top brands like Kent and Elica."
                             color="#ef4444"
                             imgSrc={brandCg}
                         />
                         <BrandCard 
                             name="Glen" 
-                            tagline="Kitchen Chimneys" 
-                            desc="Exclusive partner for Glen's advanced, silent, and high-suction kitchen chimneys and premium built-in hobs."
+                            tagline="Premium Kitchen Appliances" 
+                            desc="Exclusive partner for Glen's advanced kitchen chimneys, premium built-in hobs, dishwashers, ovens, and more."
                             color="#f59e0b"
                             imgSrc={brandGlen}
                         />
@@ -112,6 +113,7 @@ const About = () => {
                             tagline="Plywood & Kitchen Baskets" 
                             desc="Premium supplier of Shikhar plywood, durable doors, high-quality hardware products, and modular kitchen baskets."
                             color="#10b981"
+                            imgSrc={brandShikhar}
                         />
                     </div>
                 </div>
