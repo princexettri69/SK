@@ -110,8 +110,8 @@ const About = () => {
                         />
                         <BrandCard 
                             name="Shikhar Plywood" 
-                            tagline="Plywood & Kitchen Baskets" 
-                            desc="Premium supplier of Shikhar plywood, durable doors, high-quality hardware products, and modular kitchen baskets."
+                            tagline="Plywood & Doors" 
+                            desc="Premium supplier of Shikhar plywood, durable doors, and high-quality hardware products."
                             color="#10b981"
                             imgSrc={brandShikhar}
                         />
