@@ -12,6 +12,7 @@ import brandKent from '../assets/brand-kent.png';
 import brandCg from '../assets/brand-cg.png';
 import brandGlen from '../assets/brand-glen.jpg';
 import brandShikhar from '../assets/brand-shikhar.jpg';
+import brandElica from '../assets/brand-elica.png';
 
 const About = () => {
     React.useEffect(() => {
@@ -86,7 +87,7 @@ const About = () => {
                         </p>
                     </div>
                     
-                    <div className="grid grid-4" style={{ gap: '2rem' }}>
+                    <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
                         <BrandCard 
                             name="KENT" 
                             tagline="Water Purifiers & Appliances" 
@@ -114,6 +115,13 @@ const About = () => {
                             desc="Premium supplier of Shikhar plywood, durable doors, and high-quality hardware products."
                             color="#10b981"
                             imgSrc={brandShikhar}
+                        />
+                        <BrandCard 
+                            name="Elica" 
+                            tagline="Premium Chimneys" 
+                            desc="We sell premium Elica kitchen chimneys, providing state-of-the-art ventilation and sleek designs for modern kitchens."
+                            color="#8b5cf6"
+                            imgSrc={brandElica}
                         />
                     </div>
                 </div>
