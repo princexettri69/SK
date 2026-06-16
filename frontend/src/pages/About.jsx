@@ -85,18 +85,18 @@ const About = () => {
                         </p>
                     </div>
                     
-                    <div className="grid grid-3" style={{ gap: '2rem' }}>
+                    <div className="grid grid-4" style={{ gap: '2rem' }}>
                         <BrandCard 
                             name="KENT" 
-                            tagline="Water Purifiers" 
-                            desc="Certified dealer for authentic KENT RO and UV water purification systems, bringing the purest drinking water to your family."
+                            tagline="Water Purifiers & Appliances" 
+                            desc="Certified dealer providing KENT water purifiers, air coolers, induction cooktops, and a wide range of premium appliances."
                             color="#0ea5e9"
                             imgSrc={brandKent}
                         />
                         <BrandCard 
-                            name="CG" 
+                            name="CG & More" 
                             tagline="Home Appliances" 
-                            desc="Authorized retailer for Chaudhary Group's premium line of electronics, bringing cutting-edge technology to your living space."
+                            desc="Authorized retailer for CG home appliances. We also offer premium kitchen chimneys and stoves from top brands like Kent, Elica, and Glen."
                             color="#ef4444"
                             imgSrc={brandCg}
                         />
@@ -106,6 +106,12 @@ const About = () => {
                             desc="Exclusive partner for Glen's advanced, silent, and high-suction kitchen chimneys and premium built-in hobs."
                             color="#f59e0b"
                             imgSrc={brandGlen}
+                        />
+                        <BrandCard 
+                            name="Shikhar Plywood" 
+                            tagline="Plywood & Kitchen Baskets" 
+                            desc="Premium supplier of Shikhar plywood, durable doors, high-quality hardware products, and modular kitchen baskets."
+                            color="#10b981"
                         />
                     </div>
                 </div>
