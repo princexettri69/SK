@@ -45,12 +45,34 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [isHovered]);
 
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
-    import('react-hot-toast').then(({ toast }) => {
-      toast.success("Message sent successfully! We'll get back to you soon.");
-    });
-    e.target.reset();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/queries`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send inquiry');
+      }
+
+      import('react-hot-toast').then(({ toast }) => {
+        toast.success("Message sent successfully! We'll get back to you soon.");
+      });
+      e.target.reset();
+    } catch (error) {
+      import('react-hot-toast').then(({ toast }) => {
+        toast.error("Failed to send message. Please try again later.");
+      });
+      console.error(error);
+    }
   };
 
   return (

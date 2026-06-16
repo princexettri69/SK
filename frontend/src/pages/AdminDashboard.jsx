@@ -22,7 +22,8 @@ import {
   Phone,
   ArrowRight,
   Menu,
-  ExternalLink
+  ExternalLink,
+  MessageSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -46,6 +47,7 @@ const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingProduct, setEditingProduct] = useState(null);
@@ -72,11 +74,12 @@ const AdminDashboard = () => {
       const token = localStorage.getItem('token');
       const config = { headers: { Authorization: `Bearer ${token}` } };
       
-      const [usersRes, productsRes, categoriesRes, ordersRes] = await Promise.all([
+      const [usersRes, productsRes, categoriesRes, ordersRes, queriesRes] = await Promise.all([
         axios.get(`${import.meta.env.VITE_API_URL}/api/auth/users`, config),
         axios.get(`${import.meta.env.VITE_API_URL}/api/products`),
         axios.get(`${import.meta.env.VITE_API_URL}/api/categories`),
-        axios.get(`${import.meta.env.VITE_API_URL}/api/orders`, config)
+        axios.get(`${import.meta.env.VITE_API_URL}/api/orders`, config),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/queries`, config)
       ]);
 
       setUsers(usersRes.data.data.users);
@@ -86,6 +89,7 @@ const AdminDashboard = () => {
         addLog(`New procurement request detected: ${ordersRes.data[0]._id.slice(-6)}`, 'warning');
       }
       setOrders(ordersRes.data);
+      setQueries(queriesRes.data.data || []);
       
       if (categoriesRes.data.length > 0 && !newProduct.category) {
         setNewProduct(prev => ({ ...prev, category: categoriesRes.data[0].name }));
@@ -290,6 +294,12 @@ const AdminDashboard = () => {
     o._id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const filteredQueries = queries.filter(q => 
+    q.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    q.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    q.subject.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
       <div className="loader"></div>
@@ -346,6 +356,7 @@ const AdminDashboard = () => {
           <SidebarLink icon={<Package size={20} />} label="Inventory" active={activeTab === 'products'} onClick={() => { setActiveTab('products'); setSidebarOpen(false); }} />
           <SidebarLink icon={<Layers size={20} />} label="Categories" active={activeTab === 'categories'} onClick={() => { setActiveTab('categories'); setSidebarOpen(false); }} />
           <SidebarLink icon={<ShoppingBag size={20} />} label="Orders" active={activeTab === 'orders'} onClick={() => { setActiveTab('orders'); setSidebarOpen(false); }} />
+          <SidebarLink icon={<MessageSquare size={20} />} label="Queries" active={activeTab === 'queries'} onClick={() => { setActiveTab('queries'); setSidebarOpen(false); }} />
           <SidebarLink icon={<Users size={20} />} label="Customers" active={activeTab === 'users'} onClick={() => { setActiveTab('users'); setSidebarOpen(false); }} />
         </div>
 
@@ -566,6 +577,40 @@ const AdminDashboard = () => {
                             <option value="Cancelled" style={{ background: '#0f172a', color: 'white' }}>CANCELLED</option>
                           </select>
                         </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'queries' && (
+            <motion.div key="queries" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="card glass-dark" style={{ padding: '0', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+              <div style={{ padding: '2rem', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Customer Queries</h3>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', background: 'rgba(255,255,255,0.05)', padding: '0.4rem 1rem', borderRadius: '100px' }}>{filteredQueries.length} Queries</span>
+              </div>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ background: 'rgba(255,255,255,0.02)', textAlign: 'left' }}>
+                      <th style={{ padding: '1.25rem 2rem', fontSize: '0.75rem', color: '#94a3b8', fontWeight: 800, letterSpacing: '0.5px' }}>CUSTOMER</th>
+                      <th style={{ padding: '1.25rem 2rem', fontSize: '0.75rem', color: '#94a3b8', fontWeight: 800, letterSpacing: '0.5px' }}>SUBJECT</th>
+                      <th style={{ padding: '1.25rem 2rem', fontSize: '0.75rem', color: '#94a3b8', fontWeight: 800, letterSpacing: '0.5px' }}>MESSAGE</th>
+                      <th style={{ padding: '1.25rem 2rem', fontSize: '0.75rem', color: '#94a3b8', fontWeight: 800, letterSpacing: '0.5px' }}>DATE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredQueries.map((q) => (
+                      <tr key={q._id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.2s ease', cursor: 'default' }} onMouseOver={(e) => e.currentTarget.style.background='rgba(255,255,255,0.02)'} onMouseOut={(e) => e.currentTarget.style.background='transparent'}>
+                        <td style={{ padding: '1.5rem 2rem', minWidth: '150px' }}>
+                          <div style={{ fontWeight: 700, color: 'white', marginBottom: '0.2rem' }}>{q.name}</div>
+                          <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{q.email}</div>
+                        </td>
+                        <td style={{ padding: '1.5rem 2rem', color: 'white', fontWeight: 600, minWidth: '150px' }}>{q.subject}</td>
+                        <td style={{ padding: '1.5rem 2rem', color: '#94a3b8', fontSize: '0.9rem', maxWidth: '300px', whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>{q.message}</td>
+                        <td style={{ padding: '1.5rem 2rem', color: '#64748b', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>{new Date(q.createdAt).toLocaleDateString()}</td>
                       </tr>
                     ))}
                   </tbody>
